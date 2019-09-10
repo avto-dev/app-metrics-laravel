@@ -4,7 +4,11 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics;
 
+use Closure;
+use LogicException;
+use InvalidArgumentException;
 use Illuminate\Contracts\Container\Container;
+use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 
 class FormattersManager implements FormattersManagerInterface
 {
@@ -14,35 +18,96 @@ class FormattersManager implements FormattersManagerInterface
     protected $container;
 
     /**
-     * @var string[]
+     * @var Closure[]
      */
-    protected $formatters;
+    protected $factories;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $default_format;
 
     /**
      * Create a new MetricsManager instance.
      *
-     * @param Container $container
-     * @param string[]  $formatters        Formatter classes, e.g.: `['foo' => FooFormatter::class, 'bar' =>
+     * @param Container   $container
+     * @param string[]    $formatters      Formatter classes, e.g.: `['foo' => FooFormatter::class, 'bar' =>
      *                                     BarFormatter::class]`
-     * @param string    $default_format    Formatter alias, used by default
+     * @param string|null $default_format  Formatter alias, used by default
      */
-    public function __construct(Container $container, array $formatters, string $default_format)
+    public function __construct(Container $container, array $formatters, ?string $default_format = null)
     {
-        $this->container      = $container;
-        $this->formatters     = $formatters;
-        $this->default_format = $default_format;
+        $this->container = $container;
+
+        if (\is_string($default_format) && \array_key_exists($default_format, $formatters)) {
+            $this->default_format = $default_format;
+        }
+
+        foreach ($formatters as $alias => $class_name) {
+            $this->addFactory($alias, $class_name);
+        }
     }
 
     /**
-     * @return string[]
+     * @param string $alias
+     * @param string $formatter_class
+     *
+     * @throws InvalidArgumentException If passed wrong class name
+     *
+     * @return void
      */
-    public function formatters(): array
+    public function addFactory(string $alias, string $formatter_class): void
     {
-        return $this->formatters;
+        if (! \class_exists($formatter_class)) {
+            throw new InvalidArgumentException("Class [{$formatter_class}] does not exists");
+        }
+
+        if (! \in_array($contract = MetricFormatterInterface::class, \class_implements($formatter_class), true)) {
+            throw new InvalidArgumentException("Class [{$formatter_class}] must implements [{$contract}]");
+        }
+
+        $this->factories[$alias] = function () use ($formatter_class): MetricFormatterInterface {
+            return $this->container->make($formatter_class);
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function make(string $alias): MetricFormatterInterface
+    {
+        if ($this->exists($alias)) {
+            return $this->factories[$alias]();
+        }
+
+        throw new InvalidArgumentException("Unknown formatter [{$alias}] requested");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function exists(string $alias): bool
+    {
+        return isset($this->factories[$alias]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function aliases(): array
+    {
+        return \array_keys($this->factories);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function default(): MetricFormatterInterface
+    {
+        if (\is_string($this->default_format)) {
+            return $this->make($this->default_format);
+        }
+
+        throw new LogicException('Default formatter was not set');
     }
 }

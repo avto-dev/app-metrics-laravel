@@ -2,7 +2,7 @@
 
 namespace AvtoDev\AppMetrics\Metrics;
 
-interface HasDescriptionInterface extends MetricInterface
+interface HasDescriptionInterface
 {
     /**
      * Get metric description.

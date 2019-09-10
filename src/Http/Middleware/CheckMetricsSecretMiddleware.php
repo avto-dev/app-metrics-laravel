@@ -39,7 +39,7 @@ class CheckMetricsSecretMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (\is_string($this->secret) && $this->secret !== '') {
+        if (\is_string($this->secret) && \trim($this->secret) !== '') {
             // @todo: write code
         }
 

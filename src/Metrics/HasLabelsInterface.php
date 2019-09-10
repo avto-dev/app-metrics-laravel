@@ -2,7 +2,7 @@
 
 namespace AvtoDev\AppMetrics\Metrics;
 
-interface HasLabelsInterface extends MetricInterface
+interface HasLabelsInterface
 {
     /**
      * Get metric labels.

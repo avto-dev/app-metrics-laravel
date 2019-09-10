@@ -54,7 +54,7 @@ return [
     | - `enabled` - Set `false` to disable HTTP route;
     | - `uri` - URI path;
     | - `name` - Route "name";
-    | - `middleware` - Route middleware list;
+    | - `controller` - Route controller;
     | - `secret` - Secret access key (for `CheckMetricsSecretMiddleware`).
     |
     */

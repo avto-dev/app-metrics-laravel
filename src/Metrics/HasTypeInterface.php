@@ -2,7 +2,7 @@
 
 namespace AvtoDev\AppMetrics\Metrics;
 
-interface HasTypeInterface extends MetricInterface
+interface HasTypeInterface
 {
     /**
      * Get metric type.

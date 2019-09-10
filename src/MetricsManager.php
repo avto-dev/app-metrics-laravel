@@ -31,6 +31,8 @@ class MetricsManager implements MetricsManagerInterface
      *
      * @param Container $container
      * @param string[]  $metrics Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class]`
+     *
+     * @throws InvalidArgumentException If wrong metrics array passed
      */
     public function __construct(Container $container, array $metrics)
     {

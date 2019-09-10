@@ -51,7 +51,7 @@ class ServiceProviderTest extends AbstractUnitTestCase
             FormattersManager::class,
             $formatters_manager = $this->app->make(FormattersManagerInterface::class)
         );
-        $this->assertEquals($this->config->get('metrics.formatters'), $formatters_manager->formatters());
+        $this->assertEquals(\array_keys($this->config->get('metrics.formatters')), $formatters_manager->aliases());
     }
 
     /**
@@ -74,7 +74,6 @@ class ServiceProviderTest extends AbstractUnitTestCase
      */
     public function testRoutesNotBootedWhenDisabled(): void
     {
-        $this->callBeforeApplicationDestroyedCallbacks();
         $this->app->flush();
         unset($this->app);
 
