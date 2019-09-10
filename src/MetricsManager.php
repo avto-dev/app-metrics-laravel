@@ -87,6 +87,9 @@ class MetricsManager implements MetricsManagerInterface
         throw new InvalidArgumentException("Unknown metric [{$metric_abstract}] requested");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function all(): iterable
     {
         foreach ($this->classes() as $class) {
