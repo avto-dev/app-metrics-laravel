@@ -8,4 +8,11 @@ use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 
 class BarFormatter implements MetricFormatterInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function format(iterable $metrics)
+    {
+        return null;
+    }
 }

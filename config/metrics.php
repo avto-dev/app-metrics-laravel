@@ -16,7 +16,7 @@ return [
     |
     */
     'metric_classes' => [
-        // metric classes
+        AvtoDev\AppMetrics\Metrics\IlluminateFrameworkMetric::class
     ],
 
     /*

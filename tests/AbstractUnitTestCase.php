@@ -23,6 +23,8 @@ abstract class AbstractUnitTestCase extends \Illuminate\Foundation\Testing\TestC
         parent::setUp();
 
         $this->config = $this->app->make(ConfigRepository::class);
+
+        $this->config->set('app.debug', true);
     }
 
     /**

@@ -4,9 +4,16 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Http\Controllers;
 
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use AvtoDev\AppMetrics\MetricsManagerInterface;
+use AvtoDev\AppMetrics\Metrics\MetricInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use AvtoDev\AppMetrics\FormattersManagerInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 use AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware;
 
 class MetricsController extends \Illuminate\Routing\Controller
@@ -20,14 +27,51 @@ class MetricsController extends \Illuminate\Routing\Controller
     }
 
     /**
-     * @param Request         $request
-     * @param ResponseFactory $response_factory
+     * @param Request                    $request
+     * @param MetricsManagerInterface    $metrics_manager
+     * @param FormattersManagerInterface $formatters_manager
+     * @param ExceptionHandler           $exception_handler
+     * @param ConfigRepository           $config
+     * @param ResponseFactory            $response_factory
      *
      * @return Response
      */
     public function __invoke(Request $request,
-                            ResponseFactory $response_factory): Response
+                             MetricsManagerInterface $metrics_manager,
+                             FormattersManagerInterface $formatters_manager,
+                             ExceptionHandler $exception_handler,
+                             ConfigRepository $config,
+                             ResponseFactory $response_factory): Response
     {
-        // @todo: write code
+        try {
+            $format = $request->get('format');
+            $only   = \array_filter(\explode(',', $request->get('only', '')));
+
+            $formatter = \is_string($format) && $format !== ''
+                ? $formatters_manager->make($format)
+                : $formatters_manager->default();
+
+            $metrics = empty($only)
+                ? $metrics_manager->all()
+                : \array_map(static function (string $metric_alias) use ($metrics_manager): MetricInterface {
+                    return $metrics_manager->make($metric_alias);
+                }, $only);
+
+            $headers = $formatter instanceof UseCustomHttpHeadersInterface
+                ? $formatter->httpHeaders()
+                : [];
+
+            return $response_factory->make((string) $formatter->format($metrics), 200, $headers);
+        } catch (Exception $e) {
+            $exception_handler->report($e);
+
+            return $response_factory->json((object) [
+                'error'   => true,
+                'message' => $e->getMessage(),
+                'trace'   => $config->get('app.debug', false) === true
+                    ? $e->getTraceAsString()
+                    : null,
+            ], 500);
+        }
     }
 }

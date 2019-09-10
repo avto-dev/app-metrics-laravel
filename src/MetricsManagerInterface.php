@@ -49,4 +49,11 @@ interface MetricsManagerInterface
      * @return string[]
      */
     public function aliases(): array;
+
+    /**
+     * Create and iterate all available metrics.
+     *
+     * @return iterable
+     */
+    public function all(): iterable;
 }
