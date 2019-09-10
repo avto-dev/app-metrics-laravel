@@ -1,8 +1,8 @@
 <?php
 
-namespace AvtoDev\AppMetrics\Contracts;
+namespace AvtoDev\AppMetrics\Metrics;
 
-interface HasTypeInterface
+interface HasTypeInterface extends MetricInterface
 {
     /**
      * Get metric type.

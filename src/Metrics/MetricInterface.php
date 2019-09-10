@@ -1,6 +1,6 @@
 <?php
 
-namespace AvtoDev\AppMetrics\Contracts;
+namespace AvtoDev\AppMetrics\Metrics;
 
 interface MetricInterface
 {

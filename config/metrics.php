@@ -15,7 +15,7 @@ return [
     | ```
     |
     */
-    'metrics'        => [
+    'metric_classes' => [
         // metric classes
     ],
 
@@ -52,7 +52,7 @@ return [
     | Metrics can be accessible through HTTP request (get). Available options:
     |
     | - `enabled` - Set `false` to disable HTTP route;
-    | - `route` - HTTP route path;
+    | - `uri` - URI path;
     | - `name` - Route "name";
     | - `middleware` - Route middleware list;
     | - `secret` - Secret access key (for `CheckMetricsSecretMiddleware`).
@@ -60,7 +60,7 @@ return [
     */
     'http'           => [
         'enabled'    => (bool) env('METRICS_HTTP_ENABLED', true),
-        'route'      => env('METRICS_HTTP_ROUTE', '/metrics'),
+        'uri'        => env('METRICS_HTTP_URI', '/metrics'),
         'name'       => 'app.metrics',
         'controller' => AvtoDev\AppMetrics\Http\Controllers\MetricsController::class,
         'secret'     => env('METRICS_HTTP_SECRET'),

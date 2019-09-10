@@ -1,8 +1,8 @@
 <?php
 
-namespace AvtoDev\AppMetrics\Contracts;
+namespace AvtoDev\AppMetrics\Metrics;
 
-interface HasDescriptionInterface
+interface HasDescriptionInterface extends MetricInterface
 {
     /**
      * Get metric description.

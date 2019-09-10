@@ -37,4 +37,12 @@ class FormattersManager implements FormattersManagerInterface
         $this->formatters     = $formatters;
         $this->default_format = $default_format;
     }
+
+    /**
+     * @return string[]
+     */
+    public function formatters(): array
+    {
+        return $this->formatters;
+    }
 }

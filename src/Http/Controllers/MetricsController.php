@@ -28,8 +28,6 @@ class MetricsController extends \Illuminate\Routing\Controller
     public function __invoke(Request $request,
                             ResponseFactory $response_factory): Response
     {
-        $format = $request->get('format', 'json');
-
-        //return $response_factory->json();
+        // @todo: write code
     }
 }

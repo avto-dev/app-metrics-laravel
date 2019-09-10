@@ -1,8 +1,8 @@
 <?php
 
-namespace AvtoDev\AppMetrics\Contracts;
+namespace AvtoDev\AppMetrics\Metrics;
 
-interface HasLabelsInterface
+interface HasLabelsInterface extends MetricInterface
 {
     /**
      * Get metric labels.

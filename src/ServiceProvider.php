@@ -53,7 +53,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $root = static::getConfigRootKeyName();
 
         if ($config->get("{$root}.http.enabled") === true) {
-            $router->get($config->get("{$root}.http.route"), [
+            $router->get($config->get("{$root}.http.uri"), [
                 'uses' => $config->get("{$root}.http.controller"),
                 'as'   => $config->get("{$root}.http.name"),
             ]);
@@ -65,15 +65,18 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected function registerMetricsManager(): void
     {
-        $this->app->bind(MetricsManagerInterface::class, static function (Container $container) {
-            /** @var ConfigRepository $config */
-            $config = $container->make(ConfigRepository::class);
+        $this->app->bind(
+            MetricsManagerInterface::class,
+            static function (Container $container): MetricsManagerInterface {
+                /** @var ConfigRepository $config */
+                $config = $container->make(ConfigRepository::class);
 
-            return new MetricsManager(
-                $container,
-                (array) $config->get(static::getConfigRootKeyName() . '.metrics')
-            );
-        });
+                return new MetricsManager(
+                    $container,
+                    (array) $config->get(static::getConfigRootKeyName() . '.metric_classes')
+                );
+            }
+        );
     }
 
     /**
@@ -81,17 +84,20 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected function registerFormattersManager(): void
     {
-        $this->app->bind(FormattersManagerInterface::class, static function (Container $container) {
-            /** @var ConfigRepository $config */
-            $config = $container->make(ConfigRepository::class);
-            $root   = static::getConfigRootKeyName();
+        $this->app->bind(
+            FormattersManagerInterface::class,
+            static function (Container $container): FormattersManagerInterface {
+                /** @var ConfigRepository $config */
+                $config = $container->make(ConfigRepository::class);
+                $root   = static::getConfigRootKeyName();
 
-            return new FormattersManager(
-                $container,
-                (array) $config->get("{$root}.formatters"),
-                (string) $config->get("{$root}.default_format")
-            );
-        });
+                return new FormattersManager(
+                    $container,
+                    (array) $config->get("{$root}.formatters"),
+                    (string) $config->get("{$root}.default_format")
+                );
+            }
+        );
     }
 
     /**
