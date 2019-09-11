@@ -9,7 +9,7 @@ use Illuminate\Foundation\Application;
 class IlluminateFrameworkMetric implements MetricInterface, HasLabelsInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function name(): string
     {
@@ -17,7 +17,7 @@ class IlluminateFrameworkMetric implements MetricInterface, HasLabelsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function value()
     {
@@ -25,7 +25,7 @@ class IlluminateFrameworkMetric implements MetricInterface, HasLabelsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function labels(): array
     {

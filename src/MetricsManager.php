@@ -30,7 +30,7 @@ class MetricsManager implements MetricsManagerInterface
      * Create a new MetricsManager instance.
      *
      * @param Container $container
-     * @param string[]  $metrics Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class]`
+     * @param string[]  $metrics   Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class]`
      *
      * @throws InvalidArgumentException If wrong metrics array passed
      */
@@ -50,6 +50,7 @@ class MetricsManager implements MetricsManagerInterface
      * @param string|null $alias
      *
      * @throws InvalidArgumentException If passed wrong class name
+     *
      * @return void
      */
     public function addFactory(string $metric_class, ?string $alias = null): void
@@ -72,7 +73,7 @@ class MetricsManager implements MetricsManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function make(string $metric_abstract): MetricInterface
     {
@@ -88,7 +89,7 @@ class MetricsManager implements MetricsManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function iterateAll(): iterable
     {
@@ -98,7 +99,7 @@ class MetricsManager implements MetricsManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function exists(string $metric_class): bool
     {
@@ -106,7 +107,7 @@ class MetricsManager implements MetricsManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function aliasExists(string $metric_alias): bool
     {
@@ -114,7 +115,7 @@ class MetricsManager implements MetricsManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function classes(): array
     {
@@ -122,7 +123,7 @@ class MetricsManager implements MetricsManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function aliases(): array
     {

@@ -9,10 +9,9 @@ use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 class BarFormatter implements MetricFormatterInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function format(iterable $metrics)
     {
-        return null;
     }
 }

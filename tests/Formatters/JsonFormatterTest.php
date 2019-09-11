@@ -7,10 +7,10 @@ namespace AvtoDev\AppMetrics\Tests\Formatters;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Formatters\JsonFormatter;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
-use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
-use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
+use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
@@ -26,7 +26,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
     protected $formatter;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {
@@ -100,11 +100,11 @@ class JsonFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
-        $metric = new class implements MetricInterface,
+        $metric = new class implements
+    MetricInterface,
                                        HasDescriptionInterface,
                                        HasLabelsInterface,
-                                       HasTypeInterface
-        {
+                                       HasTypeInterface {
             public function description(): string
             {
                 return 'fake';
