@@ -21,6 +21,6 @@ class BarMetric implements MetricInterface
      */
     public function value()
     {
-        return 'bar value';
+        return 123;
     }
 }

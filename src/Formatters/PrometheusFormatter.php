@@ -12,6 +12,8 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
+    protected const NAN = 'Nan';
+
     /**
      * @var string
      */
@@ -73,12 +75,32 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @param string|int|float|bool|null|array $value
      *
      * @return string
+     *
+     * @example
+     * formatValue(1.2); // "1.2"
+     * formatValue(1); // "1"
+     * formatValue(true); // "1"
+     * formatValue(false); // "1"
+     * formatValue("123"); // "123"
+     * formatValue("12foo"); // "Nan"
+     * formatValue(["10", "20"]); // "Nan"
+     * formatValue(null); // "Nan"
      */
     protected function formatValue($value): string
     {
-        return is_array($value)
-            ? \implode(' ', $value)
-            : (string) $value;
+        if (\is_int($value) || \is_float($value)) {
+            return (string) $value;
+        }
+
+        if (\is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        if (\is_string($value) && \preg_match('/^\d*$/', $value)) {
+            return $value;
+        }
+
+        return static::NAN;
     }
 
     /**

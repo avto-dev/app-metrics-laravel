@@ -74,7 +74,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     {
         $metric = new FooMetric;
 
-        $this->assertSame("{$metric->name()} {$metric->value()}", $this->formatter->format([$metric]));
+        $this->assertSame("{$metric->name()} Nan", $this->formatter->format([$metric]));
     }
 
     /**
@@ -86,7 +86,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_two = new BarMetric;
 
         $this->assertSame(
-            "{$metric_one->name()} {$metric_one->value()}\n{$metric_two->name()} {$metric_two->value()}",
+            "{$metric_one->name()} Nan\n{$metric_two->name()} {$metric_two->value()}",
             $this->formatter->format([$metric_one, $metric_two])
         );
     }
@@ -98,6 +98,9 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
+        $mock =
+
+
         $metric = new class implements
             MetricInterface,
             HasDescriptionInterface,
