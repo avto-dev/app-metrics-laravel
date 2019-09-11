@@ -51,6 +51,8 @@ some_metric{foo="bar"} 1
 
 > Configuration allows you to change endpoint URI, set password protection, and more.
 
+Secret verification can be completed using sending get-parameter `?secret=XXX` or HTTP header `X-SECRET`.
+
 ### Testing
 
 For package testing we use `phpunit` framework and `docker-ce` + `docker-compose` as develop environment. So, just write into your terminal after repository cloning:
