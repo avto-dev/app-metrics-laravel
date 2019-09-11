@@ -2,7 +2,7 @@
   <img src="https://laravel.com/assets/img/components/logo-laravel.svg" alt="Laravel" width="240" />
 </p>
 
-# Application Metrics endpoint for Laravel applications
+# Metrics endpoint for Laravel applications
 
 [![Version][badge_packagist_version]][link_packagist]
 [![Version][badge_php_version]][link_packagist]
@@ -17,7 +17,7 @@ Using this package provides easy way for integration metrics endpoint into your 
 
 Require this package with composer using the following command:
 
-```shell
+```bash
 $ composer require avto-dev/app-metrics-laravel "^1.0"
 ```
 
@@ -25,9 +25,31 @@ $ composer require avto-dev/app-metrics-laravel "^1.0"
 
 > You need to fix the major version of package.
 
+After that you should "publish" package configuration file using next command:
+
+```bash
+$ php ./artisan vendor:publish --provider='AvtoDev\AppMetrics\ServiceProvider'
+```
+
+And configure it in the file `./config/metrics.php`.
+
 ## Usage
 
-...
+Feel free to write your own metric classes and add it after into `metrics.metric_classes` configuration array.
+
+> Metric class must implements `MetricInterface` and optionally `HasDescriptionInterface`/`HasLabelsInterface`/`HasTypeInterface`. In metric constructor you can request any dependencies - DI will inject it automatically.
+
+When your metric classes are ready and successfully registered into configuration file - you can request special route (`/metrics` by default):
+
+```bash
+$ curl http://127.0.0.1:8080/metrics?format=json
+{"some_metric":{"value": 1, "labels": {"foo":"bar"}}}
+
+$ curl http://127.0.0.1:8080/metrics?format=prometheus
+some_metric{foo="bar"} 1
+```
+
+> Configuration allows you to change endpoint URI, set password protection, and more.
 
 ### Testing
 

@@ -1,6 +1,6 @@
 {
     "name": "avto-dev/app-metrics-laravel",
-    "description": "Application Metrics endpoint for Laravel applications",
+    "description": "Metrics endpoint for Laravel applications",
     "keywords": [
         "laravel",
         "metrics",

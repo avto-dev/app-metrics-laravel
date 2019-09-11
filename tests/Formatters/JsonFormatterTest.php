@@ -101,10 +101,11 @@ class JsonFormatterTest extends AbstractUnitTestCase
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
         $metric = new class implements
-    MetricInterface,
-                                       HasDescriptionInterface,
-                                       HasLabelsInterface,
-                                       HasTypeInterface {
+            MetricInterface,
+            HasDescriptionInterface,
+            HasLabelsInterface,
+            HasTypeInterface
+        {
             public function description(): string
             {
                 return 'fake';
