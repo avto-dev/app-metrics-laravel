@@ -100,7 +100,6 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     {
         $mock =
 
-
         $metric = new class implements
             MetricInterface,
             HasDescriptionInterface,
