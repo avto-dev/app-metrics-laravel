@@ -12,7 +12,7 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function httpHeaders(): array
     {
@@ -22,7 +22,7 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param int $options Encoding options
      *

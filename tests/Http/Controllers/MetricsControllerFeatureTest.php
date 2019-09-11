@@ -14,7 +14,7 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 class MetricsControllerFeatureTest extends AbstractUnitTestCase
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {

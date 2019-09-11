@@ -7,7 +7,7 @@ namespace AvtoDev\AppMetrics\Metrics;
 class HostInfoMetric implements MetricInterface, HasLabelsInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function name(): string
     {
@@ -15,7 +15,7 @@ class HostInfoMetric implements MetricInterface, HasLabelsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function value()
     {
@@ -23,7 +23,7 @@ class HostInfoMetric implements MetricInterface, HasLabelsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function labels(): array
     {

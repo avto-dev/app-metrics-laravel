@@ -39,14 +39,14 @@ class ServiceProviderTest extends AbstractUnitTestCase
      */
     public function testServicesRegistration(): void
     {
-        /** @var MetricsManager $metrics_manager */
+        /* @var MetricsManager $metrics_manager */
         $this->assertInstanceOf(
             MetricsManager::class,
             $metrics_manager = $this->app->make(MetricsManagerInterface::class)
         );
         $this->assertEquals($this->config->get('metrics.metric_classes'), \array_values($metrics_manager->classes()));
 
-        /** @var FormattersManager $formatters_manager */
+        /* @var FormattersManager $formatters_manager */
         $this->assertInstanceOf(
             FormattersManager::class,
             $formatters_manager = $this->app->make(FormattersManagerInterface::class)
