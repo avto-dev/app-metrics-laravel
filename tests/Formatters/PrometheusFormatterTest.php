@@ -93,8 +93,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
     /**
      * @return void
-     * @todo Improve this test, add tests for protected methods
      *
+     * @todo Improve this test, add tests for protected methods
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
@@ -102,8 +102,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             MetricInterface,
             HasDescriptionInterface,
             HasLabelsInterface,
-            HasTypeInterface
-        {
+            HasTypeInterface {
             public function description(): string
             {
                 return 'fake';
