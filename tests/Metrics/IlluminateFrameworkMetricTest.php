@@ -6,8 +6,8 @@ namespace AvtoDev\AppMetrics\Tests\Metrics;
 
 use Illuminate\Foundation\Application;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
-use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
+use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Metrics\IlluminateFrameworkMetric;
 
 /**
@@ -21,7 +21,7 @@ class IlluminateFrameworkMetricTest extends AbstractUnitTestCase
     protected $metric;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {
