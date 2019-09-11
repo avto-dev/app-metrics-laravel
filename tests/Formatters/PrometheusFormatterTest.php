@@ -6,10 +6,10 @@ namespace AvtoDev\AppMetrics\Tests\Formatters;
 
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
-use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
-use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
+use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Formatters\PrometheusFormatter;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
@@ -26,7 +26,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     protected $formatter;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {
@@ -98,11 +98,11 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
-        $metric = new class implements MetricInterface,
+        $metric = new class implements
+    MetricInterface,
                                        HasDescriptionInterface,
                                        HasLabelsInterface,
-                                       HasTypeInterface
-        {
+                                       HasTypeInterface {
             public function description(): string
             {
                 return 'fake';

@@ -9,7 +9,7 @@ use AvtoDev\AppMetrics\Metrics\MetricInterface;
 class FooMetric implements MetricInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function name(): string
     {
@@ -17,7 +17,7 @@ class FooMetric implements MetricInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function value()
     {

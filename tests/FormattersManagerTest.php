@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use AvtoDev\AppMetrics\FormattersManager;
 use AvtoDev\AppMetrics\FormattersManagerInterface;
-use AvtoDev\AppMetrics\Tests\Stubs\Formatters\FooFormatter;
 use AvtoDev\AppMetrics\Tests\Stubs\Formatters\BarFormatter;
+use AvtoDev\AppMetrics\Tests\Stubs\Formatters\FooFormatter;
 
 /**
  * @covers \AvtoDev\AppMetrics\FormattersManager<extended>
@@ -23,7 +23,7 @@ class FormattersManagerTest extends AbstractUnitTestCase
     protected $manager;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {

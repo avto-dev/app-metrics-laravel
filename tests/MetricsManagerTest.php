@@ -5,13 +5,12 @@ declare(strict_types = 1);
 namespace AvtoDev\AppMetrics\Tests;
 
 use stdClass;
-use ArrayIterator;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use AvtoDev\AppMetrics\MetricsManager;
 use AvtoDev\AppMetrics\MetricsManagerInterface;
-use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 
 /**
  * @covers \AvtoDev\AppMetrics\MetricsManager<extended>
@@ -24,7 +23,7 @@ class MetricsManagerTest extends AbstractUnitTestCase
     protected $manager;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {

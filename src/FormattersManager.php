@@ -31,9 +31,9 @@ class FormattersManager implements FormattersManagerInterface
      * Create a new MetricsManager instance.
      *
      * @param Container   $container
-     * @param string[]    $formatters      Formatter classes, e.g.: `['foo' => FooFormatter::class, 'bar' =>
-     *                                     BarFormatter::class]`
-     * @param string|null $default_format  Formatter alias, used by default
+     * @param string[]    $formatters     Formatter classes, e.g.: `['foo' => FooFormatter::class, 'bar' =>
+     *                                    BarFormatter::class]`
+     * @param string|null $default_format Formatter alias, used by default
      */
     public function __construct(Container $container, array $formatters, ?string $default_format = null)
     {
@@ -72,7 +72,7 @@ class FormattersManager implements FormattersManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function make(string $alias): MetricFormatterInterface
     {
@@ -84,7 +84,7 @@ class FormattersManager implements FormattersManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function exists(string $alias): bool
     {
@@ -92,7 +92,7 @@ class FormattersManager implements FormattersManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function aliases(): array
     {
@@ -100,7 +100,7 @@ class FormattersManager implements FormattersManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function default(): MetricFormatterInterface
     {

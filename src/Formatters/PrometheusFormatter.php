@@ -26,7 +26,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function httpHeaders(): array
     {
@@ -36,7 +36,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @return string
      */
@@ -95,10 +95,10 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
             case HasTypeInterface::TYPE_GAUGE:
                 return 'GAUGE';
 
-            case HasTypeInterface::TYPE_HISTOGRAM;
+            case HasTypeInterface::TYPE_HISTOGRAM:
                 return 'HISTOGRAM';
 
-            case HasTypeInterface::TYPE_SUMMARY;
+            case HasTypeInterface::TYPE_SUMMARY:
                 return 'SUMMARY';
         }
 

@@ -16,18 +16,13 @@ use AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware;
 class CheckMetricsSecretMiddlewareTest extends AbstractUnitTestCase
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->setupMetricsConfig();
-    }
-
-    protected function middlewareFactory(): CheckMetricsSecretMiddleware
-    {
-        return $this->app->make(CheckMetricsSecretMiddleware::class);
     }
 
     /**
@@ -56,7 +51,7 @@ class CheckMetricsSecretMiddlewareTest extends AbstractUnitTestCase
             //
         });
 
-        /** @var JsonResponse $result */
+        /* @var JsonResponse $result */
         $this->assertInstanceOf(JsonResponse::class, $result);
         $this->assertJsonStringEqualsJsonString('{"error":true,"message":"Unauthorized"}', $result->getContent());
     }
@@ -93,5 +88,10 @@ class CheckMetricsSecretMiddlewareTest extends AbstractUnitTestCase
                 return $expected;
             })
         );
+    }
+
+    protected function middlewareFactory(): CheckMetricsSecretMiddleware
+    {
+        return $this->app->make(CheckMetricsSecretMiddleware::class);
     }
 }
