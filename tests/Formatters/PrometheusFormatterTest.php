@@ -92,6 +92,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     }
 
     /**
+     * @todo Improve this test, add tests for protected methods
+     *
      * @return void
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
