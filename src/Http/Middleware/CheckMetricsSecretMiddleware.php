@@ -8,7 +8,6 @@ use Closure;
 use Illuminate\Http\Request;
 use AvtoDev\AppMetrics\ServiceProvider;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class CheckMetricsSecretMiddleware
@@ -41,15 +40,13 @@ class CheckMetricsSecretMiddleware
      * @param Request $request
      * @param Closure $next
      *
-     * @throws HttpException
-     *
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         if (\is_string($this->secret) && \trim($this->secret) !== '') {
             if ($request->get('secret', $request->header('X-SECRET')) !== $this->secret) {
-                return $this->response_factory->json((object) [
+                return $this->response_factory->json([
                     'error'   => true,
                     'message' => 'Unauthorized',
                 ], 401);

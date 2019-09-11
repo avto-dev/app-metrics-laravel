@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace AvtoDev\AppMetrics\Tests;
 
 use stdClass;
+use ArrayIterator;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use AvtoDev\AppMetrics\MetricsManager;
@@ -138,6 +139,20 @@ class MetricsManagerTest extends AbstractUnitTestCase
         $this->assertFalse($this->manager->aliasExists(BarMetric::class));
         $this->assertFalse($this->manager->exists(Str::random()));
         $this->assertFalse($this->manager->exists(stdClass::class));
+    }
+
+    /**
+     * @return void
+     */
+    public function testAllIterator(): void
+    {
+        $all = [];
+        \array_push($all, ...$this->manager->iterateAll());
+
+        $this->assertInstanceOf(FooMetric::class, $all[0]);
+        $this->assertInstanceOf(BarMetric::class, $all[1]);
+
+        $this->assertCount(2, $all);
     }
 
     /**

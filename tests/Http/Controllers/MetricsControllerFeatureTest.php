@@ -2,15 +2,16 @@
 
 declare(strict_types = 1);
 
-namespace AvtoDev\AppMetrics\Tests;
+namespace AvtoDev\AppMetrics\Tests\Http\Controllers;
 
 use Illuminate\Support\Str;
+use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 
 /**
  * @covers \AvtoDev\AppMetrics\Http\Controllers\MetricsController<extended>
  * @covers \AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware<extended>
  */
-class HttpFeatureTest extends AbstractUnitTestCase
+class MetricsControllerFeatureTest extends AbstractUnitTestCase
 {
     /**
      * {@inheritDoc}
@@ -19,12 +20,12 @@ class HttpFeatureTest extends AbstractUnitTestCase
     {
         parent::setUp();
 
+        $this->setupMetricsConfig();
+
         $this->config->set('metrics.metric_classes', [
             'framework' => \AvtoDev\AppMetrics\Metrics\IlluminateFrameworkMetric::class,
             'host'      => \AvtoDev\AppMetrics\Metrics\HostInfoMetric::class,
         ]);
-        $this->config->set('metrics.default_format', 'json');
-        $this->config->set('metrics.http.secret', '');
     }
 
     /**
@@ -32,12 +33,13 @@ class HttpFeatureTest extends AbstractUnitTestCase
      */
     public function testBasicControllerInvoking(): void
     {
-        $this
+        $response = $this
             ->get('/metrics')
             ->assertSuccessful()
             ->assertHeader('Content-Type', 'application/json')
-            ->assertJsonCount(2)
             ->assertJsonStructure(['*' => ['value']]);
+
+        $this->assertCount(2, \json_decode($response->getContent(), true));
     }
 
     /**
@@ -45,11 +47,12 @@ class HttpFeatureTest extends AbstractUnitTestCase
      */
     public function testControllerInvokingPassingOnlyArgument(): void
     {
-        $this
+        $response = $this
             ->get('/metrics?only=host')
             ->assertSuccessful()
-            ->assertJsonCount(1)
             ->assertJsonStructure(['*' => ['value']]);
+
+        $this->assertCount(1, \json_decode($response->getContent(), true));
     }
 
     /**
@@ -60,7 +63,6 @@ class HttpFeatureTest extends AbstractUnitTestCase
         $this
             ->get('/metrics?format=prometheus')
             ->assertSuccessful()
-            ->dump()
             ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
             ->assertSee('illuminate')
             ->assertSee('host_info');

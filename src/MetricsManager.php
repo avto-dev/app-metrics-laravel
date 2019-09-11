@@ -90,7 +90,7 @@ class MetricsManager implements MetricsManagerInterface
     /**
      * {@inheritDoc}
      */
-    public function all(): iterable
+    public function iterateAll(): iterable
     {
         foreach ($this->classes() as $class) {
             yield $this->make($class);

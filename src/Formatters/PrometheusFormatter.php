@@ -114,7 +114,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
     {
         return '{' . \implode(',', \array_filter(\array_map(
                 static function ($value, $key) {
-                    return \is_scalar($value) && \is_scalar($key)
+                    return \is_scalar($value) && ! empty($key)
                         ? \sprintf('%s="%s"', $key, \addslashes((string) $value))
                         : null;
                 },

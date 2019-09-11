@@ -53,7 +53,7 @@ interface MetricsManagerInterface
     /**
      * Create and iterate all available metrics.
      *
-     * @return iterable
+     * @return MetricInterface[]|iterable
      */
-    public function all(): iterable;
+    public function iterateAll(): iterable;
 }

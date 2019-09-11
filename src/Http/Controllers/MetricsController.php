@@ -52,7 +52,7 @@ class MetricsController extends \Illuminate\Routing\Controller
                 : $formatters_manager->default();
 
             $metrics = empty($only)
-                ? $metrics_manager->all()
+                ? $metrics_manager->iterateAll()
                 : \array_map(static function (string $metric_alias) use ($metrics_manager): MetricInterface {
                     return $metrics_manager->make($metric_alias);
                 }, $only);
@@ -65,7 +65,7 @@ class MetricsController extends \Illuminate\Routing\Controller
         } catch (Exception $e) {
             $exception_handler->report($e);
 
-            return $response_factory->json((object) [
+            return $response_factory->json([
                 'error'   => true,
                 'message' => $e->getMessage(),
                 'trace'   => $config->get('app.debug', false) === true
