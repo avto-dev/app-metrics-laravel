@@ -104,8 +104,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
             MetricInterface,
             HasDescriptionInterface,
             HasLabelsInterface,
-            HasTypeInterface
-        {
+            HasTypeInterface {
             public function description(): string
             {
                 return 'fake';
