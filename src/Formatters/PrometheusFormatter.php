@@ -12,6 +12,11 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
+    /**
+     * Not a number value
+     *
+     * @var string
+     */
     protected const NAN = 'Nan';
 
     /**
