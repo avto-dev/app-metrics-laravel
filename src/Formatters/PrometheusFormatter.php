@@ -13,7 +13,7 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
     /**
-     * Not a number value
+     * Not a number value.
      *
      * @var string
      */
