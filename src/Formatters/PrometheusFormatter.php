@@ -168,7 +168,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
                 continue;
             }
             // https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
-            if (!preg_match('/[a-zA-Z_:][a-zA-Z0-9_:]*/', (string) $key)) {
+            if (! preg_match('/[a-zA-Z_:][a-zA-Z0-9_:]*/', (string) $key)) {
                 continue;
             }
 
