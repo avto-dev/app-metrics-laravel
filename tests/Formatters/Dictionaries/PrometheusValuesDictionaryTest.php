@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters\Dictionaries;
 
-use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
+use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 /**
  * Class PrometheusValuesDictionaryTest.
@@ -38,10 +38,9 @@ class PrometheusValuesDictionaryTest extends AbstractUnitTestCase
     protected function getExpectedEntries():array
     {
         return  [
-            'NAN' => 'Nan',
+            'NAN'          => 'Nan',
             'POSITIVE_INF' => '+Inf',
             'NEGATIVE_INF' => '-Inf',
         ];
     }
-
 }

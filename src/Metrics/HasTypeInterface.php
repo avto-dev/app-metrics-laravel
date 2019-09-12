@@ -26,7 +26,7 @@ interface HasTypeInterface
     public const TYPE_SUMMARY = 'SUMMARY';
 
     /**
-     * Safe fallback type
+     * Safe fallback type.
      */
     public const TYPE_UNTYPED = 'UNTYPED';
 

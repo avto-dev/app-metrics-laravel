@@ -157,7 +157,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             ['SUMMARY', HasTypeInterface::TYPE_SUMMARY],
             ['foo', HasTypeInterface::TYPE_UNTYPED],
             ['bar', HasTypeInterface::TYPE_UNTYPED],
-            ['untyped', HasTypeInterface::TYPE_UNTYPED]
+            ['untyped', HasTypeInterface::TYPE_UNTYPED],
         ];
 
         $mock = m::mock(\implode(', ', [MetricInterface::class, HasTypeInterface::class]))
@@ -188,7 +188,6 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatValue(): void
     {
-
         $data_sets = [
             [1.2, '1.2'],
             [1, '1'],

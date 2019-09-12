@@ -4,12 +4,12 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Formatters;
 
-use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 use Illuminate\Support\Str;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
