@@ -55,7 +55,7 @@ class MetricsManagerTest extends AbstractUnitTestCase
         $this->assertSame('foo value', $this->manager->make(FooMetric::class)->value());
         $this->assertSame('foo', $this->manager->make(FooMetric::class)->name());
 
-        $this->assertSame(123, $this->manager->make(BarMetric::class)->value());
+        $this->assertSame('bar value', $this->manager->make(BarMetric::class)->value());
         $this->assertSame('bar', $this->manager->make(BarMetric::class)->name());
 
         $this->assertSame('foo value', $this->manager->make('foo')->value());

@@ -87,7 +87,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_two = new BarMetric;
 
         $this->assertSame(
-            "{$metric_one->name()} Nan\n{$metric_two->name()} {$metric_two->value()}",
+            "{$metric_one->name()} Nan\n{$metric_two->name()} Nan",
             $this->formatter->format([$metric_one, $metric_two])
         );
     }
