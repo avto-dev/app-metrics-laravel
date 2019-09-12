@@ -145,6 +145,8 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @example
      * formatLabels([])                               // ''
      * formatLabels(['foo' => 'bar'])                 // '{foo="bar"}'
+     * formatLabels(['_foo' => 'bar'])                // '{_foo="bar"}'
+     * formatLabels(['123foo' => 'bar'])              // ''
      * formatLabels(['foo' => 'ba\r'])                // '{foo="ba\\\r"}'
      * formatLabels(['foo' => 'ba"r'])                // '{foo="ba\"r"}'
      * formatLabels(['foo' => 'ba\nr'])               // '{foo="ba\\\nr"}'
@@ -168,7 +170,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
                 continue;
             }
             // https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
-            if (! preg_match('/[a-zA-Z_:][a-zA-Z0-9_:]*/', (string) $key)) {
+            if (! preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', (string) $key)) {
                 continue;
             }
 

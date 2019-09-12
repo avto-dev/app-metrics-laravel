@@ -227,6 +227,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $data_sets = [
             [[], ''],
             [['foo' => 'bar'], '{foo="bar"}'],
+            [['_foo' => 'bar'], '{_foo="bar"}'],
+            [['123foo' => 'bar'], ''],
             [['foo' => 'ba\r'], '{foo="ba\\\r"}'],
             [['foo' => 'ba"r'], '{foo="ba\"r"}'],
             [['foo' => 'ba\nr'], '{foo="ba\\\nr"}'],
