@@ -29,7 +29,8 @@ class PrometheusValuesDictionaryTest extends AbstractUnitTestCase
      */
     public function testAllMethod(): void
     {
-        $this->assertEmpty(\array_diff($this->getExpectedEntries(), PrometheusValuesDictionary::all()));
+        $constants = (new \ReflectionClass(PrometheusValuesDictionary::class))->getConstants();
+        $this->assertEmpty(\array_diff($constants, PrometheusValuesDictionary::all()));
     }
 
     /**
