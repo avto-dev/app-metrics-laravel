@@ -76,17 +76,17 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @return string
      *
      * @example
-     * formatValue(1.2); // '1.2'
-     * formatValue(1); // '1'
-     * formatValue(true); // '1'
-     * formatValue(false); // '0'
-     * formatValue('123'); // '123'
-     * formatValue('12foo'); // 'Nan'
-     * formatValue(['10', '20']); // 'Nan'
-     * formatValue(null); // 'Nan'
-     * formatValue('Nan'); // 'Nan'
-     * formatValue('+Inf'); // '+Inf'
-     * formatValue('-Inf'); // '-Inf'
+     * formatValue(1.2);            // '1.2'
+     * formatValue(1);              // '1'
+     * formatValue(true);           // '1'
+     * formatValue(false);          // '0'
+     * formatValue('123');          // '123'
+     * formatValue('12foo');        // 'Nan'
+     * formatValue(['10', '20']);   // 'Nan'
+     * formatValue(null);           // 'Nan'
+     * formatValue('Nan');          // 'Nan'
+     * formatValue('+Inf');         // '+Inf'
+     * formatValue('-Inf');         // '-Inf'
      */
     protected function formatValue($value): string
     {
@@ -115,14 +115,14 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @return string
      *
      * @example
-     * formatType('counter'); // 'COUNTER'
-     * formatType('COUNTER'); // 'COUNTER'
-     * formatType('gauge'); // 'GAUGE'
+     * formatType('counter');   // 'COUNTER'
+     * formatType('COUNTER');   // 'COUNTER'
+     * formatType('gauge');     // 'GAUGE'
      * formatType('histogram'); // 'HISTOGRAM'
-     * formatType('summary'); // 'SUMMARY'
-     * formatType('untyped'); // 'UNTYPED'
-     * formatType('foo'); // 'UNTYPED'
-     * formatType(''); // 'UNTYPED'
+     * formatType('summary');   // 'SUMMARY'
+     * formatType('untyped');   // 'UNTYPED'
+     * formatType('foo');       // 'UNTYPED'
+     * formatType('');          // 'UNTYPED'
      */
     protected function formatType(string $type): string
     {
@@ -141,17 +141,58 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @param array $labels
      *
      * @return string
+     *
+     * @example
+     * formatLabels([])                               // ''
+     * formatLabels(['foo' => 'bar'])                 // '{foo="bar"}'
+     * formatLabels(['foo' => 'ba\r'])                // '{foo="ba\\\r"}'
+     * formatLabels(['foo' => 'ba"r'])                // '{foo="ba\"r"}'
+     * formatLabels(['foo' => 'ba\nr'])               // '{foo="ba\\\nr"}'
+     * formatLabels(['foo' => 'bar', 'bar' => 'baz']) // '{foo="bar",bar="baz"}'
+     * formatLabels(['foo' => false])                 // '{foo="false"}'
+     * formatLabels(['foo' => true])                  // '{foo="true"}'
+     * formatLabels(['foo' => null])                  // ''
+     * formatLabels(['foo' => 123])                   // '{foo="123"}'
+     * formatLabels(['foo' => 12.3])                  // '{foo="12.3"}'
+     * formatLabels(['foo'])                          // ''
+     * formatLabels(['foo' => \tmpfile()])            // ''
+     * formatLabels(['foo' => function(){}])          // ''
+     * formatLabels(['foo' => []])                    // ''
      */
     protected function formatLabels(array $labels): string
     {
-        return '{' . \implode(',', \array_filter(\array_map(
-                static function ($value, $key) {
-                    return \is_scalar($value) && ! empty($key)
-                        ? \sprintf('%s="%s"', $key, \addslashes((string) $value))
-                        : null;
-                },
-                $labels,
-                \array_keys($labels)
-            ))) . '}';
+        $labels_array = [];
+
+        foreach ($labels as $key => $value) {
+            if (! \is_scalar($value) || empty($key)) {
+                continue;
+            }
+            // https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
+            if (!preg_match('/[a-zA-Z_:][a-zA-Z0-9_:]*/', (string) $key)) {
+                continue;
+            }
+
+            $formatted_value = $value;
+
+            if (\is_bool($value)) {
+                $formatted_value = $value ? 'true' : 'false';
+            }
+
+            if (\is_int($value) || \is_float($value)) {
+                $formatted_value = (string) $value;
+            }
+
+            $labels_array[$key] = \addslashes((string) $formatted_value);
+        }
+
+        $formatted_labels = \implode(',', \array_filter(\array_map(
+            static function ($value, $key) {
+                return  \sprintf('%s="%s"', $key, $value);
+            },
+            $labels_array,
+            \array_keys($labels_array)
+        )));
+
+        return $formatted_labels === '' ? $formatted_labels : '{' . $formatted_labels . '}';
     }
 }

@@ -226,15 +226,16 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     {
         $data_sets = [
             [[], ''],
-            [['foo' => 'bar'], 'foo="bar"'],
-            [['foo' => 'ba\r'], 'foo="ba\\\r"'],
-            [['foo' => 'ba"r'], 'foo="ba\"r"'],
-            [['foo' => 'ba\nr'], 'foo="ba\\\nr"'],
-            [['foo' => 'bar', 'bar' => 'baz'], 'foo="bar",bar="baz"'],
-            [['foo' => false], 'foo=""'],
+            [['foo' => 'bar'], '{foo="bar"}'],
+            [['foo' => 'ba\r'], '{foo="ba\\\r"}'],
+            [['foo' => 'ba"r'], '{foo="ba\"r"}'],
+            [['foo' => 'ba\nr'], '{foo="ba\\\nr"}'],
+            [['foo' => 'bar', 'bar' => 'baz'], '{foo="bar",bar="baz"}'],
+            [['foo' => false], '{foo="false"}'],
+            [['foo' => true], '{foo="true"}'],
             [['foo' => null], ''],
-            [['foo' => 123], 'foo="123"'],
-            [['foo' => 12.3], 'foo="12.3"'],
+            [['foo' => 123], '{foo="123"}'],
+            [['foo' => 12.3], '{foo="12.3"}'],
             [['foo'], ''],
             [['foo' => \tmpfile()], ''],
             [['foo' => function(){}], ''],
@@ -259,7 +260,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $result = $this->formatter->format([$mock]);
 
-            $this->assertSame("foo{{$expected}} 1", $result);
+            $this->assertSame("foo{$expected} 1", $result);
         }
     }
 }
