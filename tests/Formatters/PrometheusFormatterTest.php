@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
+use Mockery as m;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
@@ -98,8 +99,6 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
-        $mock =
-
         $metric = new class implements
             MetricInterface,
             HasDescriptionInterface,
@@ -140,5 +139,124 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $this->assertRegExp("~HELP {$metric->name()} {$metric->description()}\n~", $result);
         $this->assertRegExp("~TYPE {$metric->name()} UNTYPED\n~", $result);
         $this->assertRegExp("~{$metric->name()}{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1~", $result);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatType(): void
+    {
+        $data_sets = [
+            ['counter', HasTypeInterface::TYPE_COUNTER],
+            ['COUNTER', HasTypeInterface::TYPE_COUNTER],
+            ['histogram', HasTypeInterface::TYPE_HISTOGRAM],
+            ['HISTOGRAM', HasTypeInterface::TYPE_HISTOGRAM],
+            ['gauge', HasTypeInterface::TYPE_GAUGE],
+            ['GAUGE', HasTypeInterface::TYPE_GAUGE],
+            ['summary', HasTypeInterface::TYPE_SUMMARY],
+            ['SUMMARY', HasTypeInterface::TYPE_SUMMARY],
+            ['foo', HasTypeInterface::TYPE_UNTYPED],
+            ['bar', HasTypeInterface::TYPE_UNTYPED],
+            ['untyped', HasTypeInterface::TYPE_UNTYPED]
+        ];
+
+        $mock = m::mock(\implode(', ', [MetricInterface::class, HasTypeInterface::class]))
+            ->makePartial()
+            ->shouldReceive('name')
+            ->andReturn('foo')
+            ->getMock()
+            ->shouldReceive('value')
+            ->andReturn(true)
+            ->getMock();
+
+        foreach ($data_sets as [$input, $expected]) {
+            $mock = $mock
+                ->shouldReceive('type')
+                ->once()
+                ->andReturn($input)
+                ->getMock();
+
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertRegExp("~TYPE {$mock->name()} {$expected}\n~", $result);
+            $this->assertRegExp("~{$mock->name()} 1~", $result);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatValue(): void
+    {
+
+        $data_sets = [
+            [1.2, '1.2'],
+            [1, '1'],
+            [true, '1'],
+            [false, '0'],
+            ['123', '123'],
+            ['12foo', 'Nan'],
+            [['10', '20'], 'Nan'],
+            [null, 'Nan'],
+            ['Nan', 'Nan'],
+            ['+Inf', '+Inf'],
+            ['-Inf', '-Inf'],
+        ];
+
+        $mock = m::mock(MetricInterface::class)
+            ->makePartial()
+            ->shouldReceive('name')
+            ->andReturn('foo')
+            ->getMock();
+
+        foreach ($data_sets as [$input, $expected]) {
+            $mock = $mock
+                ->shouldReceive('value')
+                ->once()
+                ->andReturn($input)
+                ->getMock();
+
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertSame("{$mock->name()} {$expected}", $result);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatLabel(): void
+    {
+        $data_sets = [
+            [[], ''],
+            [['foo' => 'bar'], 'foo="bar"'],
+            [['foo' => 'bar', 'bar' => 'baz'], 'foo="bar",bar="baz"'],
+            [['foo'=>false], 'foo=""'],
+            [['foo'=>null], ''],
+            [['foo'=>123], 'foo="123"'],
+            [['foo'=>12.3], 'foo="12.3"'],
+            [['foo'], ''],
+        ];
+
+        $mock = m::mock(\implode(', ', [MetricInterface::class, HasLabelsInterface::class]))
+            ->makePartial()
+            ->shouldReceive('name')
+            ->andReturn('foo')
+            ->getMock()
+            ->shouldReceive('value')
+            ->andReturn(1)
+            ->getMock();
+
+        foreach ($data_sets as [$input, $expected]) {
+            $mock = $mock
+                ->shouldReceive('labels')
+                ->once()
+                ->andReturn($input)
+                ->getMock();
+
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertRegExp("~{$mock->name()}{{$expected}} 1~", $result);
+        }
     }
 }

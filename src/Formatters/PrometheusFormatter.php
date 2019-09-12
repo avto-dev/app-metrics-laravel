@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Formatters;
 
+use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 use Illuminate\Support\Str;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
@@ -12,13 +13,6 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
-    /**
-     * Not a number value.
-     *
-     * @var string
-     */
-    protected const NAN = 'Nan';
-
     /**
      * @var string
      */
@@ -82,17 +76,24 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @return string
      *
      * @example
-     * formatValue(1.2); // "1.2"
-     * formatValue(1); // "1"
-     * formatValue(true); // "1"
-     * formatValue(false); // "1"
-     * formatValue("123"); // "123"
-     * formatValue("12foo"); // "Nan"
-     * formatValue(["10", "20"]); // "Nan"
-     * formatValue(null); // "Nan"
+     * formatValue(1.2); // '1.2'
+     * formatValue(1); // '1'
+     * formatValue(true); // '1'
+     * formatValue(false); // '0'
+     * formatValue('123'); // '123'
+     * formatValue('12foo'); // 'Nan'
+     * formatValue(['10', '20']); // 'Nan'
+     * formatValue(null); // 'Nan'
+     * formatValue('Nan'); // 'Nan'
+     * formatValue('+Inf'); // '+Inf'
+     * formatValue('-Inf'); // '-Inf'
      */
     protected function formatValue($value): string
     {
+        if (\in_array($value, PrometheusValuesDictionary::all(), true)) {
+            return $value;
+        }
+
         if (\is_int($value) || \is_float($value)) {
             return (string) $value;
         }
@@ -105,31 +106,35 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
             return $value;
         }
 
-        return static::NAN;
+        return PrometheusValuesDictionary::NAN;
     }
 
     /**
      * @param string $type
      *
      * @return string
+     *
+     * @example
+     * formatType('counter'); // 'COUNTER'
+     * formatType('COUNTER'); // 'COUNTER'
+     * formatType('gauge'); // 'GAUGE'
+     * formatType('histogram'); // 'HISTOGRAM'
+     * formatType('summary'); // 'SUMMARY'
+     * formatType('untyped'); // 'UNTYPED'
+     * formatType('foo'); // 'UNTYPED'
+     * formatType(''); // 'UNTYPED'
      */
     protected function formatType(string $type): string
     {
-        switch ($type) {
+        switch ($type = Str::upper($type)) {
             case HasTypeInterface::TYPE_COUNTER:
-                return 'COUNTER';
-
             case HasTypeInterface::TYPE_GAUGE:
-                return 'GAUGE';
-
             case HasTypeInterface::TYPE_HISTOGRAM:
-                return 'HISTOGRAM';
-
             case HasTypeInterface::TYPE_SUMMARY:
-                return 'SUMMARY';
+                return $type;
         }
 
-        return 'UNTYPED';
+        return HasTypeInterface::TYPE_UNTYPED;
     }
 
     /**
