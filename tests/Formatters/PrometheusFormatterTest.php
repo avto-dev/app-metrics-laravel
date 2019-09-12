@@ -94,8 +94,6 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
     /**
      * @return void
-     *
-     * @todo Improve this test, add tests for protected methods
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
@@ -136,9 +134,9 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
         $result = $this->formatter->format([$metric]);
 
-        $this->assertRegExp("~HELP {$metric->name()} {$metric->description()}\n~", $result);
-        $this->assertRegExp("~TYPE {$metric->name()} UNTYPED\n~", $result);
-        $this->assertRegExp("~{$metric->name()}{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1~", $result);
+        $this->assertRegExp("~HELP blah fake\n~", $result);
+        $this->assertRegExp("~TYPE blah UNTYPED\n~", $result);
+        $this->assertRegExp('~blah{foo="1",bar="3.14",baz="yahoo"} 1~', $result);
     }
 
     /**
@@ -178,8 +176,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~TYPE {$mock->name()} {$expected}\n~", $result);
-            $this->assertRegExp("~{$mock->name()} 1~", $result);
+            $this->assertRegExp("~TYPE foo {$expected}\n~", $result);
+            $this->assertRegExp('~foo 1~', $result);
         }
     }
 
@@ -217,7 +215,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $result = $this->formatter->format([$mock]);
 
-            $this->assertSame("{$mock->name()} {$expected}", $result);
+            $this->assertSame("foo {$expected}", $result);
         }
     }
 
@@ -229,12 +227,18 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $data_sets = [
             [[], ''],
             [['foo' => 'bar'], 'foo="bar"'],
+            [['foo' => 'ba\r'], 'foo="ba\\\r"'],
+            [['foo' => 'ba"r'], 'foo="ba\"r"'],
+            [['foo' => 'ba\nr'], 'foo="ba\\\nr"'],
             [['foo' => 'bar', 'bar' => 'baz'], 'foo="bar",bar="baz"'],
-            [['foo'=>false], 'foo=""'],
-            [['foo'=>null], ''],
-            [['foo'=>123], 'foo="123"'],
-            [['foo'=>12.3], 'foo="12.3"'],
+            [['foo' => false], 'foo=""'],
+            [['foo' => null], ''],
+            [['foo' => 123], 'foo="123"'],
+            [['foo' => 12.3], 'foo="12.3"'],
             [['foo'], ''],
+            [['foo' => \tmpfile()], ''],
+            [['foo' => function(){}], ''],
+            [['foo' => []], ''],
         ];
 
         $mock = m::mock(\implode(', ', [MetricInterface::class, HasLabelsInterface::class]))
@@ -255,7 +259,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~{$mock->name()}{{$expected}} 1~", $result);
+            $this->assertSame("foo{{$expected}} 1", $result);
         }
     }
 }
