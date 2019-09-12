@@ -237,7 +237,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             [['foo' => 12.3], 'foo="12.3"'],
             [['foo'], ''],
             [['foo' => \tmpfile()], ''],
-            [['foo' => function(){}], ''],
+            [['foo' => function () {
+            }], ''],
             [['foo' => []], ''],
         ];
 
