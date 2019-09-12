@@ -269,4 +269,38 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             $this->assertSame("foo{$expected} 1", $result);
         }
     }
+
+    /**
+     * @return void
+     */
+    public function testSetLineBreaker(): void
+    {
+        $data_sets = [
+            "\n",
+            \PHP_EOL,
+            '',
+            ' ',
+            "\t",
+            'some_string',
+        ];
+
+        $mock = m::mock(\implode(', ', [MetricInterface::class, HasTypeInterface::class]))
+            ->makePartial()
+            ->shouldReceive('name')
+            ->andReturn('foo')
+            ->getMock()
+            ->shouldReceive('value')
+            ->andReturn(true)
+            ->getMock()
+            ->shouldReceive('type')
+            ->andReturn('UNTYPED')
+            ->getMock();
+
+        foreach ($data_sets as $breaker) {
+            $this->formatter->setLineBreaker($breaker);
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertRegExp("~TYPE foo UNTYPED{$breaker}~", $result);
+        }
+    }
 }

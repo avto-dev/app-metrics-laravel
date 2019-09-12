@@ -56,6 +56,22 @@ class FormattersManagerTest extends AbstractUnitTestCase
     /**
      * @return void
      */
+    public function testMakeDefaultFormatterThrowsException(): void
+    {
+        $manager = new FormattersManager($this->app, [
+            'foo' => FooFormatter::class,
+            'bar' => BarFormatter::class,
+        ]);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Default formatter was not set');
+
+        $manager->default();
+    }
+
+    /**
+     * @return void
+     */
     public function testAddFactory(): void
     {
         $this->manager = new FormattersManager($this->app, []);
