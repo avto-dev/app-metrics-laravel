@@ -145,6 +145,9 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      * @example
      * formatLabels([])                               // ''
      * formatLabels(['foo' => 'bar'])                 // '{foo="bar"}'
+     * formatLabels(['foo' => 'Nan'])                 // '{foo="Nan"}'
+     * formatLabels(['foo' => '-Inf'])                // '{foo="-Inf"}'
+     * formatLabels(['foo' => '+Inf'])                // '{foo="+Inf"}'
      * formatLabels(['_foo' => 'bar'])                // '{_foo="bar"}'
      * formatLabels(['123foo' => 'bar'])              // ''
      * formatLabels(['foo' => 'ba\r'])                // '{foo="ba\\\r"}'
