@@ -59,8 +59,9 @@ Out of the box this package provides `json` and `prometheus` metrics formats. Fe
 
 #### Prometheus formatter
 
-Prometheus formatter uses some constants for metric's values and types. You can find it in [`\AvtoDev\AppMetrics\Metrics\HasTypeInterface`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Metrics/HasTypeInterface.php) and
-[`\AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Formatters/Dictionaries/PrometheusValuesDictionary.php)
+Prometheus formatter uses some constants for metric's values(`Nan`, `+Inf`, `-Inf`) and types(`COUNTER`,`SUMMARY`,`GAUGE`,`HISTOGRAM`, `UNTYPED`). You can find it in
+[`\AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Formatters/Dictionaries/PrometheusValuesDictionary.php) and 
+[`\AvtoDev\AppMetrics\Metrics\HasTypeInterface`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Metrics/HasTypeInterface.php)
 
 ### Testing
 
