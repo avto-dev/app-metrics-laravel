@@ -53,6 +53,15 @@ some_metric{foo="bar"} 1
 
 Secret verification can be completed using sending get-parameter `?secret=XXX` or HTTP header `X-SECRET`.
 
+### Formatters
+
+Out of the box this package provides `json` and `prometheus` metrics formats. Feel free to write your own formatters.
+
+#### Prometheus formatter
+
+Prometheus formatter uses some constants for metric's values and types. You can find it in [`\AvtoDev\AppMetrics\Metrics\HasTypeInterface`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Metrics/HasTypeInterface.php) and
+[`\AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Formatters/Dictionaries/PrometheusValuesDictionary.php)
+
 ### Testing
 
 For package testing we use `phpunit` framework and `docker-ce` + `docker-compose` as develop environment. So, just write into your terminal after repository cloning:
