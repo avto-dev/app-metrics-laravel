@@ -34,8 +34,6 @@ class PrometheusValuesDictionary
      */
     public static function all(): array
     {
-//        return (new \ReflectionClass(static::class))->getConstants();
-
         return [
             static::NAN,
             static::POSITIVE_INF,

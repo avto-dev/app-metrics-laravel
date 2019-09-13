@@ -98,7 +98,14 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
             return $value ? '1' : '0';
         }
 
-        if (\is_string($value) && \in_array($value, PrometheusValuesDictionary::all(), true)) {
+        if (
+            \is_string($value)
+            && \in_array(
+                Str::upper($value),
+                \array_map([Str::class, 'upper'], PrometheusValuesDictionary::all()),
+                true
+            )
+        ) {
             return $value;
         }
 
@@ -172,8 +179,10 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
             if (! \is_scalar($value) || empty($key)) {
                 continue;
             }
-            // https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
-            if (! preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', (string) $key)) {
+            /**
+             * @link https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
+             */
+            if (! \preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', (string) $key)) {
                 continue;
             }
 

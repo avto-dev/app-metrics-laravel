@@ -97,42 +97,15 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
-        $metric = new class implements
-            MetricInterface,
-            HasDescriptionInterface,
-            HasLabelsInterface,
-            HasTypeInterface {
-            public function description(): string
-            {
-                return 'fake';
-            }
+        $labels = [
+            'foo' => 1,
+            'bar' => 3.14,
+            'baz' => 'yahoo',
+        ];
 
-            public function labels(): array
-            {
-                return [
-                    'foo' => 1,
-                    'bar' => 3.14,
-                    'baz' => 'yahoo',
-                ];
-            }
+        $mock = $this->getMetricMock('blah', true, 'fake_type', $labels, 'fake');
 
-            public function name(): string
-            {
-                return 'blah';
-            }
-
-            public function type(): string
-            {
-                return 'fake_type';
-            }
-
-            public function value()
-            {
-                return true;
-            }
-        };
-
-        $result = $this->formatter->format([$metric]);
+        $result = $this->formatter->format([$mock]);
 
         $this->assertRegExp("~HELP blah fake\n~", $result);
         $this->assertRegExp("~TYPE blah UNTYPED\n~", $result);
@@ -158,21 +131,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             ['untyped', HasTypeInterface::TYPE_UNTYPED],
         ];
 
-        $mock = m::mock(\implode(', ', [MetricInterface::class, HasTypeInterface::class]))
-            ->makePartial()
-            ->shouldReceive('name')
-            ->andReturn('foo')
-            ->getMock()
-            ->shouldReceive('value')
-            ->andReturn(true)
-            ->getMock();
-
         foreach ($data_sets as [$input, $expected]) {
-            $mock = $mock
-                ->shouldReceive('type')
-                ->once()
-                ->andReturn($input)
-                ->getMock();
+            $mock = $this->getMetricMock('foo', true, $input);
 
             $result = $this->formatter->format([$mock]);
 
@@ -200,18 +160,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             ['-Inf', '-Inf'],
         ];
 
-        $mock = m::mock(MetricInterface::class)
-            ->makePartial()
-            ->shouldReceive('name')
-            ->andReturn('foo')
-            ->getMock();
-
         foreach ($data_sets as [$input, $expected]) {
-            $mock = $mock
-                ->shouldReceive('value')
-                ->once()
-                ->andReturn($input)
-                ->getMock();
+            $mock = $this->getMetricMock('foo', $input);
 
             $result = $this->formatter->format([$mock]);
 
@@ -248,21 +198,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             [['foo' => []], ''],
         ];
 
-        $mock = m::mock(\implode(', ', [MetricInterface::class, HasLabelsInterface::class]))
-            ->makePartial()
-            ->shouldReceive('name')
-            ->andReturn('foo')
-            ->getMock()
-            ->shouldReceive('value')
-            ->andReturn(1)
-            ->getMock();
-
         foreach ($data_sets as [$input, $expected]) {
-            $mock = $mock
-                ->shouldReceive('labels')
-                ->once()
-                ->andReturn($input)
-                ->getMock();
+            $mock = $this->getMetricMock('foo', 1, null, $input);
 
             $result = $this->formatter->format([$mock]);
 
@@ -283,18 +220,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             "\t",
             'some_string',
         ];
-
-        $mock = m::mock(\implode(', ', [MetricInterface::class, HasTypeInterface::class]))
-            ->makePartial()
-            ->shouldReceive('name')
-            ->andReturn('foo')
-            ->getMock()
-            ->shouldReceive('value')
-            ->andReturn(true)
-            ->getMock()
-            ->shouldReceive('type')
-            ->andReturn('UNTYPED')
-            ->getMock();
+        $mock = $this->getMetricMock('foo', true, 'UNTYPED');
 
         foreach ($data_sets as $breaker) {
             $this->formatter->setLineBreaker($breaker);
@@ -302,5 +228,59 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $this->assertRegExp("~TYPE foo UNTYPED{$breaker}~", $result);
         }
+    }
+
+    protected function getMetricMock(
+        string $name = 'fake',
+        $value = true,
+        ?string $type = null,
+        ?array $labels = null,
+        ?string $description = null): MetricInterface
+    {
+        $interfaces = [MetricInterface::class];
+
+        if ($type !== null) {
+            $interfaces[] = HasTypeInterface::class;
+        }
+
+        if ($labels !== null) {
+            $interfaces[] = HasLabelsInterface::class;
+        }
+
+        if ($description !== null) {
+            $interfaces[] = HasDescriptionInterface::class;
+        }
+
+        $metric = m::mock(\implode(', ', $interfaces))
+            ->makePartial()
+            ->shouldReceive('name')
+            ->andReturn($name)
+            ->getMock()
+            ->shouldReceive('value')
+            ->andReturn($value)
+            ->getMock();
+
+        if ($type !== null) {
+            $metric = $metric
+                ->shouldReceive('type')
+                ->andReturn($type)
+                ->getMock();
+        }
+
+        if ($labels !== null) {
+            $metric = $metric
+                ->shouldReceive('labels')
+                ->andReturn($labels)
+                ->getMock();
+        }
+
+        if ($description !== null) {
+            $metric = $metric
+                ->shouldReceive('description')
+                ->andReturn($description)
+                ->getMock();
+        }
+
+        return $metric;
     }
 }
