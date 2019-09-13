@@ -118,17 +118,18 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     public function testFormatType(): void
     {
         $data_sets = [
-            ['counter', HasTypeInterface::TYPE_COUNTER],
-            ['COUNTER', HasTypeInterface::TYPE_COUNTER],
-            ['histogram', HasTypeInterface::TYPE_HISTOGRAM],
-            ['HISTOGRAM', HasTypeInterface::TYPE_HISTOGRAM],
-            ['gauge', HasTypeInterface::TYPE_GAUGE],
-            ['GAUGE', HasTypeInterface::TYPE_GAUGE],
-            ['summary', HasTypeInterface::TYPE_SUMMARY],
-            ['SUMMARY', HasTypeInterface::TYPE_SUMMARY],
-            ['foo', HasTypeInterface::TYPE_UNTYPED],
-            ['bar', HasTypeInterface::TYPE_UNTYPED],
-            ['untyped', HasTypeInterface::TYPE_UNTYPED],
+            ['counter', 'COUNTER'],
+            ['COUNTER', 'COUNTER'],
+            ['histogram', 'HISTOGRAM'],
+            ['HISTOGRAM', 'HISTOGRAM'],
+            ['gauge', 'GAUGE'],
+            ['GAUGE', 'GAUGE'],
+            ['summary', 'SUMMARY'],
+            ['SUMMARY', 'SUMMARY'],
+            ['foo', 'UNTYPED'],
+            ['bar', 'UNTYPED'],
+            ['untyped', 'UNTYPED'],
+            ['', 'UNTYPED'],
         ];
 
         foreach ($data_sets as [$input, $expected]) {
