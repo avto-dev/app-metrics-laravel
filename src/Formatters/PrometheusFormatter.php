@@ -179,7 +179,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
             if (! \is_scalar($value) || empty($key)) {
                 continue;
             }
-            /**
+            /*
              * @link https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
              */
             if (! \preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', (string) $key)) {
