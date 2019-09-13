@@ -230,6 +230,15 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         }
     }
 
+    /**
+     * @param string      $name
+     * @param bool        $value
+     * @param string|null $type
+     * @param array|null  $labels
+     * @param string|null $description
+     *
+     * @return MetricInterface
+     */
     protected function getMetricMock(
         string $name = 'fake',
         $value = true,
