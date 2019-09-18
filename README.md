@@ -59,25 +59,23 @@ Out of the box this package provides `json` and `prometheus` metrics formats. Fe
 
 #### Prometheus formatter
 
-Prometheus formatter uses some constants for metric's values(`Nan`, `+Inf`, `-Inf`) and types(`COUNTER`,`SUMMARY`,`GAUGE`,`HISTOGRAM`, `UNTYPED`). You can find it in
-[`\AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Formatters/Dictionaries/PrometheusValuesDictionary.php) and 
-[`\AvtoDev\AppMetrics\Metrics\HasTypeInterface`](https://github.com/avto-dev/app-metrics-laravel/blob/master/src/Metrics/HasTypeInterface.php)
+Prometheus formatter uses some constants for metric's values(`Nan`, `+Inf`, `-Inf`) and types(`COUNTER`,`SUMMARY`,`GAUGE`,`HISTOGRAM`, `UNTYPED`). You can find it in [`PrometheusValuesDictionary`](./src/Formatters/Dictionaries/PrometheusValuesDictionary.php) and [`HasTypeInterface`](./src/Metrics/HasTypeInterface.php)
 
 Keep in mind that `Prometheus` accepts only numeric metrics values. This formatter will try to cast metrics values to numeric format (`integer` or `float`). And will set `Nan` if casting to numeric is impossible. Examples for formatting values:
 
 | Input | Output |
 | ----- | ------ |
-| 1.2 | '1.2' |
-| 1 | '1' |
-| true | '1' |
-| false | '0' |
-| '123' | '123' |
-| '12foo' | 'Nan' |
-| ['10', '20'] |'Nan' |
-| null | 'Nan' |
-| 'Nan' | 'Nan' |
-| '+Inf' | '+Inf' |
-| '-Inf' | '-Inf' |
+| `1.2` | `'1.2'` |
+| `1` | `'1'` |
+| `true` | `'1'` |
+| `false` | `'0'` |
+| `'123'` | `'123'` |
+| `'12foo'` | `'Nan'` |
+| `['10', '20']` | `'Nan'` |
+| `null` | `'Nan'` |
+| `'Nan'` | `'Nan'` |
+| `'+Inf'` | `'+Inf'` |
+| `'-Inf'` | `'-Inf'` |
 
 ### Testing
 

@@ -8,8 +8,6 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 /**
- * Class PrometheusValuesDictionaryTest.
- *
  * @covers \AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary<extended>
  */
 class PrometheusValuesDictionaryTest extends AbstractUnitTestCase
@@ -19,9 +17,14 @@ class PrometheusValuesDictionaryTest extends AbstractUnitTestCase
      */
     public function testConstants(): void
     {
+        $expected_constants = [
+            'NAN'          => 'Nan',
+            'POSITIVE_INF' => '+Inf',
+            'NEGATIVE_INF' => '-Inf',
+        ];
         $constants = (new \ReflectionClass(PrometheusValuesDictionary::class))->getConstants();
-        $this->assertEmpty(\array_diff($this->getExpectedEntries(), $constants));
-        $this->assertEmpty(\array_diff(\array_keys($this->getExpectedEntries()), \array_keys($constants)));
+        $this->assertEmpty(\array_diff($expected_constants, $constants));
+        $this->assertEmpty(\array_diff(\array_keys($expected_constants), \array_keys($constants)));
     }
 
     /**
@@ -31,17 +34,5 @@ class PrometheusValuesDictionaryTest extends AbstractUnitTestCase
     {
         $constants = (new \ReflectionClass(PrometheusValuesDictionary::class))->getConstants();
         $this->assertEmpty(\array_diff($constants, PrometheusValuesDictionary::all()));
-    }
-
-    /**
-     * @return array
-     */
-    protected function getExpectedEntries():array
-    {
-        return  [
-            'NAN'          => 'Nan',
-            'POSITIVE_INF' => '+Inf',
-            'NEGATIVE_INF' => '-Inf',
-        ];
     }
 }

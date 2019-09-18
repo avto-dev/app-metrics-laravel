@@ -107,9 +107,10 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
         $result = $this->formatter->format([$mock]);
 
-        $this->assertRegExp("~HELP blah fake\n~", $result);
-        $this->assertRegExp("~TYPE blah UNTYPED\n~", $result);
-        $this->assertRegExp('~blah{foo="1",bar="3.14",baz="yahoo"} 1~', $result);
+        $this->assertSame(
+            "HELP blah fake\nTYPE blah UNTYPED\nblah{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1",
+            $result
+        );
     }
 
     /**
