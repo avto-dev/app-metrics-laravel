@@ -6,9 +6,14 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## v1.0.0
 
-### Changed
+### Added
 
-- First release
+- Managers `FormattersManager`, `MetricsManager`. Possible to load via `DI`
+- Controller `MetricsController`
+- Middleware `CheckMetricsSecretMiddleware`
+- Interfaces for metrics and simple static metrics `HostInfoMetric`, `IlluminateFrameworkMetric`
+- Formatters `JsonFormatter`, `PrometheusFormatter`
+- Dictionary `PrometheusValuesDictionary.php`
 
 [keepachangelog]:https://keepachangelog.com/en/1.0.0/
 [semver]:https://semver.org/spec/v2.0.0.html

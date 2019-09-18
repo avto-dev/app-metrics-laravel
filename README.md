@@ -53,6 +53,30 @@ some_metric{foo="bar"} 1
 
 Secret verification can be completed using sending get-parameter `?secret=XXX` or HTTP header `X-SECRET`.
 
+### Formatters
+
+Out of the box this package provides `json` and `prometheus` metrics formats. Feel free to write your own formatters.
+
+#### Prometheus formatter
+
+Prometheus formatter uses some constants for metric's values(`Nan`, `+Inf`, `-Inf`) and types(`COUNTER`,`SUMMARY`,`GAUGE`,`HISTOGRAM`, `UNTYPED`). You can find it in [`PrometheusValuesDictionary`](./src/Formatters/Dictionaries/PrometheusValuesDictionary.php) and [`HasTypeInterface`](./src/Metrics/HasTypeInterface.php)
+
+Keep in mind that `Prometheus` accepts only numeric metrics values. This formatter will try to cast metrics values to numeric format (`integer` or `float`). And will set `Nan` if casting to numeric is impossible. Examples for formatting values:
+
+| Input | Output |
+| ----- | ------ |
+| `1.2` | `'1.2'` |
+| `1` | `'1'` |
+| `true` | `'1'` |
+| `false` | `'0'` |
+| `'123'` | `'123'` |
+| `'12foo'` | `'Nan'` |
+| `['10', '20']` | `'Nan'` |
+| `null` | `'Nan'` |
+| `'Nan'` | `'Nan'` |
+| `'+Inf'` | `'+Inf'` |
+| `'-Inf'` | `'-Inf'` |
+
 ### Testing
 
 For package testing we use `phpunit` framework and `docker-ce` + `docker-compose` as develop environment. So, just write into your terminal after repository cloning:

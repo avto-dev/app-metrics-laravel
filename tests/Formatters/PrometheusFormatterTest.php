@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
+use Mockery as m;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
@@ -74,7 +75,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     {
         $metric = new FooMetric;
 
-        $this->assertSame("{$metric->name()} {$metric->value()}", $this->formatter->format([$metric]));
+        $this->assertSame("{$metric->name()} Nan", $this->formatter->format([$metric]));
     }
 
     /**
@@ -86,57 +87,211 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_two = new BarMetric;
 
         $this->assertSame(
-            "{$metric_one->name()} {$metric_one->value()}\n{$metric_two->name()} {$metric_two->value()}",
+            "{$metric_one->name()} Nan\n{$metric_two->name()} Nan",
             $this->formatter->format([$metric_one, $metric_two])
         );
     }
 
     /**
      * @return void
-     *
-     * @todo Improve this test, add tests for protected methods
      */
     public function testFormatWithPassingMetricWithAllPossibleInterfaces(): void
     {
-        $metric = new class implements
-            MetricInterface,
-            HasDescriptionInterface,
-            HasLabelsInterface,
-            HasTypeInterface {
-            public function description(): string
-            {
-                return 'fake';
-            }
+        $labels = [
+            'foo' => 1,
+            'bar' => 3.14,
+            'baz' => 'yahoo',
+        ];
 
-            public function labels(): array
-            {
-                return [
-                    'foo' => 1,
-                    'bar' => 3.14,
-                    'baz' => 'yahoo',
-                ];
-            }
+        $mock = $this->getMetricMock('blah', true, 'fake_type', $labels, 'fake');
 
-            public function name(): string
-            {
-                return 'blah';
-            }
+        $result = $this->formatter->format([$mock]);
 
-            public function type(): string
-            {
-                return 'fake_type';
-            }
+        $this->assertSame(
+            "HELP blah fake\nTYPE blah UNTYPED\nblah{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1",
+            $result
+        );
+    }
 
-            public function value()
-            {
-                return true;
-            }
-        };
+    /**
+     * @return void
+     */
+    public function testFormatType(): void
+    {
+        $data_sets = [
+            ['counter', 'COUNTER'],
+            ['COUNTER', 'COUNTER'],
+            ['histogram', 'HISTOGRAM'],
+            ['HISTOGRAM', 'HISTOGRAM'],
+            ['gauge', 'GAUGE'],
+            ['GAUGE', 'GAUGE'],
+            ['summary', 'SUMMARY'],
+            ['SUMMARY', 'SUMMARY'],
+            ['foo', 'UNTYPED'],
+            ['bar', 'UNTYPED'],
+            ['untyped', 'UNTYPED'],
+            ['', 'UNTYPED'],
+        ];
 
-        $result = $this->formatter->format([$metric]);
+        foreach ($data_sets as [$input, $expected]) {
+            $mock = $this->getMetricMock('foo', true, $input);
 
-        $this->assertRegExp("~HELP {$metric->name()} {$metric->description()}\n~", $result);
-        $this->assertRegExp("~TYPE {$metric->name()} UNTYPED\n~", $result);
-        $this->assertRegExp("~{$metric->name()}{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1~", $result);
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertRegExp("~TYPE foo {$expected}\n~", $result);
+            $this->assertRegExp('~foo 1~', $result);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatValue(): void
+    {
+        $data_sets = [
+            [1.2, '1.2'],
+            [1, '1'],
+            [true, '1'],
+            [false, '0'],
+            ['123', '123'],
+            ['12foo', 'Nan'],
+            [['10', '20'], 'Nan'],
+            [null, 'Nan'],
+            ['Nan', 'Nan'],
+            ['+Inf', '+Inf'],
+            ['-Inf', '-Inf'],
+        ];
+
+        foreach ($data_sets as [$input, $expected]) {
+            $mock = $this->getMetricMock('foo', $input);
+
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertSame("foo {$expected}", $result);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatLabel(): void
+    {
+        $data_sets = [
+            [[], ''],
+            [['foo' => 'bar'], '{foo="bar"}'],
+            [['foo' => 'Nan'], '{foo="Nan"}'],
+            [['foo' => '-Inf'], '{foo="-Inf"}'],
+            [['foo' => '+Inf'], '{foo="+Inf"}'],
+            [['_foo' => 'bar'], '{_foo="bar"}'],
+            [['123foo' => 'bar'], ''],
+            [['foo' => 'ba\r'], '{foo="ba\\\r"}'],
+            [['foo' => 'ba"r'], '{foo="ba\"r"}'],
+            [['foo' => 'ba\nr'], '{foo="ba\\\nr"}'],
+            [['foo' => 'bar', 'bar' => 'baz'], '{foo="bar",bar="baz"}'],
+            [['foo' => false], '{foo="false"}'],
+            [['foo' => true], '{foo="true"}'],
+            [['foo' => null], ''],
+            [['foo' => 123], '{foo="123"}'],
+            [['foo' => 12.3], '{foo="12.3"}'],
+            [['foo'], ''],
+            [['foo' => \tmpfile()], ''],
+            [['foo' => function () {
+            }], ''],
+            [['foo' => []], ''],
+        ];
+
+        foreach ($data_sets as [$input, $expected]) {
+            $mock = $this->getMetricMock('foo', 1, null, $input);
+
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertSame("foo{$expected} 1", $result);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetLineBreaker(): void
+    {
+        $data_sets = [
+            "\n",
+            \PHP_EOL,
+            '',
+            ' ',
+            "\t",
+            'some_string',
+        ];
+        $mock = $this->getMetricMock('foo', true, 'UNTYPED');
+
+        foreach ($data_sets as $breaker) {
+            $this->formatter->setLineBreaker($breaker);
+            $result = $this->formatter->format([$mock]);
+
+            $this->assertRegExp("~TYPE foo UNTYPED{$breaker}~", $result);
+        }
+    }
+
+    /**
+     * @param string      $name
+     * @param bool        $value
+     * @param string|null $type
+     * @param array|null  $labels
+     * @param string|null $description
+     *
+     * @return MetricInterface
+     */
+    protected function getMetricMock(
+        string $name = 'fake',
+        $value = true,
+        ?string $type = null,
+        ?array $labels = null,
+        ?string $description = null): MetricInterface
+    {
+        $interfaces = [MetricInterface::class];
+
+        if ($type !== null) {
+            $interfaces[] = HasTypeInterface::class;
+        }
+
+        if ($labels !== null) {
+            $interfaces[] = HasLabelsInterface::class;
+        }
+
+        if ($description !== null) {
+            $interfaces[] = HasDescriptionInterface::class;
+        }
+
+        $metric = m::mock(\implode(', ', $interfaces))
+            ->makePartial()
+            ->shouldReceive('name')
+            ->andReturn($name)
+            ->getMock()
+            ->shouldReceive('value')
+            ->andReturn($value)
+            ->getMock();
+
+        if ($type !== null) {
+            $metric = $metric
+                ->shouldReceive('type')
+                ->andReturn($type)
+                ->getMock();
+        }
+
+        if ($labels !== null) {
+            $metric = $metric
+                ->shouldReceive('labels')
+                ->andReturn($labels)
+                ->getMock();
+        }
+
+        if ($description !== null) {
+            $metric = $metric
+                ->shouldReceive('description')
+                ->andReturn($description)
+                ->getMock();
+        }
+
+        return $metric;
     }
 }
