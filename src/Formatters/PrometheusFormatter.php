@@ -48,11 +48,11 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         foreach ($metrics as $metric) {
             if ($metric instanceof MetricInterface) {
                 if ($metric instanceof HasDescriptionInterface) {
-                    $result .= "HELP {$metric->name()} {$metric->description()}" . $this->new_line;
+                    $result .= "# HELP {$metric->name()} {$metric->description()}" . $this->new_line;
                 }
 
                 if ($metric instanceof HasTypeInterface) {
-                    $result .= "TYPE {$metric->name()} {$this->formatType($metric->type())}" . $this->new_line;
+                    $result .= "# TYPE {$metric->name()} {$this->formatType($metric->type())}" . $this->new_line;
                 }
 
                 $labels_string = $metric instanceof HasLabelsInterface
