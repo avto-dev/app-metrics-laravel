@@ -7,11 +7,16 @@ return [
     | Metric Classes
     |--------------------------------------------------------------------------
     |
-    | Feel free to add your own metric classes to this array. For example:
+    | Feel free to add your own metric classes (that implements
+    | `MetricInterface`) to this array. Also you can define here metric groups
+    | (group is object, that implements `MetricsGroupInterface` interface).
+    |
+    | For example:
     |
     | ```
     | Metrics\FooMetric::class,
     | 'bar' => Metrics\BarMetric::class, // 'bar' is metric alias
+    | 'blah' => Metrics\MetricsGroup::class,
     | ```
     |
     */

@@ -2,7 +2,7 @@
 
 namespace AvtoDev\AppMetrics\Metrics;
 
-interface MetricsCollectionInterface
+interface MetricsGroupInterface
 {
     /**
      * Get metrics collection.

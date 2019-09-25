@@ -12,6 +12,7 @@ use AvtoDev\AppMetrics\MetricsManagerInterface;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use AvtoDev\AppMetrics\FormattersManagerInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 use AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware;
@@ -53,9 +54,7 @@ class MetricsController extends \Illuminate\Routing\Controller
 
             $metrics = empty($only)
                 ? $metrics_manager->iterateAll()
-                : \array_map(static function (string $metric_alias) use ($metrics_manager): MetricInterface {
-                    return $metrics_manager->make($metric_alias);
-                }, $only);
+                : $metrics_manager->iterate($only);
 
             $headers = $formatter instanceof UseCustomHttpHeadersInterface
                 ? $formatter->httpHeaders()

@@ -9,7 +9,7 @@ use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
@@ -47,7 +47,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         $result = '';
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricsCollectionInterface) {
+            if ($metric instanceof MetricsGroupInterface) {
                 foreach ($metric->metrics() as $collection_item) {
                     if ($collection_item instanceof MetricInterface) {
                         $result .= $this->metricToString($collection_item);

@@ -13,7 +13,7 @@ use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use spec\Prophecy\Doubler\Generator\ClassCreatorSpec;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 
@@ -102,7 +102,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatUsingMetricsCollection(): void
     {
-        $collection = new class implements MetricsCollectionInterface {
+        $collection = new class implements MetricsGroupInterface {
             public function metrics(): iterable
             {
                 return [
@@ -126,7 +126,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatUsingMetricsCollectionAndOneMetric(): void
     {
-        $collection = new class implements MetricsCollectionInterface {
+        $collection = new class implements MetricsGroupInterface {
             public function metrics(): iterable
             {
                 return [

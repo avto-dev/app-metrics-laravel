@@ -8,7 +8,7 @@ use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
@@ -34,7 +34,7 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
         $result = [];
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricsCollectionInterface) {
+            if ($metric instanceof MetricsGroupInterface) {
                 foreach ($metric->metrics() as $collection_item) {
                     if ($collection_item instanceof MetricInterface) {
                         $result[$collection_item->name()] = (object) $this->metricToArray($collection_item);
