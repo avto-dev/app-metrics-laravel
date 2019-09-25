@@ -108,7 +108,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $result = $this->formatter->format([$mock]);
 
         $this->assertSame(
-            "HELP blah fake\nTYPE blah UNTYPED\nblah{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1",
+            "# HELP blah fake\n# TYPE blah UNTYPED\nblah{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1",
             $result
         );
     }
@@ -138,7 +138,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~TYPE foo {$expected}\n~", $result);
+            $this->assertRegExp("~# TYPE foo {$expected}\n~", $result);
             $this->assertRegExp('~foo 1~', $result);
         }
     }
@@ -228,7 +228,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             $this->formatter->setLineBreaker($breaker);
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~TYPE foo UNTYPED{$breaker}~", $result);
+            $this->assertRegExp("~# TYPE foo UNTYPED{$breaker}~", $result);
         }
     }
 
