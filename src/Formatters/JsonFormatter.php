@@ -35,14 +35,12 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
 
         foreach ($metrics as $metric) {
             if ($metric instanceof MetricsCollectionInterface) {
-                foreach ($metric as $collection_item) {
+                foreach ($metric->metrics() as $collection_item) {
                     if ($collection_item instanceof MetricInterface) {
                         $result[$collection_item->name()] = (object) $this->metricToArray($collection_item);
                     }
                 }
-            }
-
-            if ($metric instanceof MetricInterface) {
+            } elseif ($metric instanceof MetricInterface) {
                 $result[$metric->name()] = (object) $this->metricToArray($metric);
             }
         }

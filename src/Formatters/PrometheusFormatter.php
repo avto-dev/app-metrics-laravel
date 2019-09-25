@@ -9,6 +9,7 @@ use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
@@ -46,20 +47,14 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         $result = '';
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricInterface) {
-                if ($metric instanceof HasDescriptionInterface) {
-                    $result .= "# HELP {$metric->name()} {$metric->description()}" . $this->new_line;
+            if ($metric instanceof MetricsCollectionInterface) {
+                foreach ($metric->metrics() as $collection_item) {
+                    if ($collection_item instanceof MetricInterface) {
+                        $result .= $this->metricToString($collection_item);
+                    }
                 }
-
-                if ($metric instanceof HasTypeInterface) {
-                    $result .= "# TYPE {$metric->name()} {$this->formatType($metric->type())}" . $this->new_line;
-                }
-
-                $labels_string = $metric instanceof HasLabelsInterface
-                    ? $this->formatLabels($metric->labels())
-                    : '';
-
-                $result .= "{$metric->name()}{$labels_string} {$this->formatValue($metric->value())}" . $this->new_line;
+            } elseif ($metric instanceof MetricInterface) {
+                $result .= $this->metricToString($metric);
             }
         }
 
@@ -68,6 +63,30 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         }
 
         return $result;
+    }
+
+    /**
+     * @param MetricInterface $metric
+     *
+     * @return string
+     */
+    protected function metricToString(MetricInterface $metric): string
+    {
+        $result = '';
+
+        if ($metric instanceof HasDescriptionInterface) {
+            $result .= "# HELP {$metric->name()} {$metric->description()}" . $this->new_line;
+        }
+
+        if ($metric instanceof HasTypeInterface) {
+            $result .= "# TYPE {$metric->name()} {$this->formatType($metric->type())}" . $this->new_line;
+        }
+
+        $labels_string = $metric instanceof HasLabelsInterface
+            ? $this->formatLabels($metric->labels())
+            : '';
+
+        return $result . "{$metric->name()}{$labels_string} {$this->formatValue($metric->value())}" . $this->new_line;
     }
 
     /**

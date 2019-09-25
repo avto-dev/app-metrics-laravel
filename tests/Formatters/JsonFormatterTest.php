@@ -11,7 +11,9 @@ use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
+use spec\Prophecy\Doubler\Generator\ClassCreatorSpec;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 
@@ -93,6 +95,53 @@ class JsonFormatterTest extends AbstractUnitTestCase
 
         $this->assertObjectHasAttribute($name_two = $metric_two->name(), $result);
         $this->assertSame($metric_two->value(), $result->{$name_two}->value);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatUsingMetricsCollection(): void
+    {
+        $collection = new class implements MetricsCollectionInterface {
+            public function metrics(): iterable
+            {
+                return [
+                    new FooMetric,
+                    new BarMetric,
+                ];
+            }
+        };
+
+        $result     = \json_decode($this->formatter->format([$collection]), false);
+
+        $this->assertObjectHasAttribute($name_one = ($metric_one = new FooMetric)->name(), $result);
+        $this->assertSame($metric_one->value(), $result->{$name_one}->value);
+
+        $this->assertObjectHasAttribute($name_two = ($metric_two = new BarMetric)->name(), $result);
+        $this->assertSame($metric_two->value(), $result->{$name_two}->value);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatUsingMetricsCollectionAndOneMetric(): void
+    {
+        $collection = new class implements MetricsCollectionInterface {
+            public function metrics(): iterable
+            {
+                return [
+                    new FooMetric
+                ];
+            }
+        };
+
+        $result     = \json_decode($this->formatter->format([$collection, $metric = new BarMetric]), false);
+
+        $this->assertObjectHasAttribute($name_one = ($metric_one = new FooMetric)->name(), $result);
+        $this->assertSame($metric_one->value(), $result->{$name_one}->value);
+
+        $this->assertObjectHasAttribute($name_two = $metric->name(), $result);
+        $this->assertSame($metric->value(), $result->{$name_two}->value);
     }
 
     /**

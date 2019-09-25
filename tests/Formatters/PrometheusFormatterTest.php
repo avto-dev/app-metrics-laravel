@@ -13,6 +13,7 @@ use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Formatters\PrometheusFormatter;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 
@@ -76,6 +77,86 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric = new FooMetric;
 
         $this->assertSame("{$metric->name()} Nan", $this->formatter->format([$metric]));
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatUsingMetricsCollection(): void
+    {
+        $metric_one = new FooMetric;
+        $metric_two = new BarMetric;
+
+        $collection = new class ($metric_one, $metric_two) implements MetricsCollectionInterface {
+            /**
+             * @var MetricInterface
+             */
+            protected $one;
+
+            /**
+             * @var MetricInterface
+             */
+            protected $two;
+
+            /**
+             * @param MetricInterface $one
+             * @param MetricInterface $two
+             */
+            public function __construct(MetricInterface $one, MetricInterface $two)
+            {
+                $this->one = $one;
+                $this->two = $two;
+            }
+
+            public function metrics(): iterable
+            {
+                return [
+                    $this->one,
+                    $this->two,
+                ];
+            }
+        };
+
+        $this->assertSame(
+            "{$metric_one->name()} Nan\n{$metric_two->name()} Nan",
+            $this->formatter->format([$collection])
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatUsingMetricsCollectionAndOneMetric(): void
+    {
+        $metric_one = new FooMetric;
+        $metric_two = new BarMetric;
+
+        $collection = new class ($metric_one) implements MetricsCollectionInterface {
+            /**
+             * @var MetricInterface
+             */
+            protected $one;
+
+            /**
+             * @param MetricInterface $one
+             */
+            public function __construct(MetricInterface $one)
+            {
+                $this->one = $one;
+            }
+
+            public function metrics(): iterable
+            {
+                return [
+                    $this->one,
+                ];
+            }
+        };
+
+        $this->assertSame(
+            "{$metric_one->name()} Nan\n{$metric_two->name()} Nan",
+            $this->formatter->format([$collection, $metric_two])
+        );
     }
 
     /**
