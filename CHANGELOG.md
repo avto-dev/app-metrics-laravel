@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Fixed
 
-- Fixed missing lead hash symbols for strings that begins with `HELP` and `TYPE` tokens in prometheus formatter
+- Fixed missing lead hash symbols for strings that begins with `HELP` and `TYPE` tokens in prometheus formatter [#4]
+
+[#4]: https://github.com/avto-dev/app-metrics-laravel/issues/4
 
 ## v1.0.0
 
