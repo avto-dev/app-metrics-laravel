@@ -39,6 +39,8 @@ Feel free to write your own metric classes and add it after into `metrics.metric
 
 > Metric class must implements `MetricInterface` and optionally `HasDescriptionInterface`/`HasLabelsInterface`/`HasTypeInterface`. In metric constructor you can request any dependencies - DI will inject it automatically.
 
+> Also metric class can implements `MetricsGroupInterface` (for metrics grouping).
+
 When your metric classes are ready and successfully registered into configuration file - you can request special route (`/metrics` by default):
 
 ```bash

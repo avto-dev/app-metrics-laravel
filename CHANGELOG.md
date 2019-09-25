@@ -4,12 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v2.0.0
 
 ### Added
 
 - Interface `MetricsCollectionInterface`
 - Formatters `JsonFormatter` and `PrometheusFormatter` now supports `MetricsCollectionInterface`
+- Metric groups can be defined in `metrics.metric_classes`
+- `MetricsManagerInterface::iterate(array $abstracts)` method
+
+### Changed
+
+- `MetricsManager` can works with metric groups now
+- `MetricsManager::addFactory` allows to register fabric for object that implements `MetricsGroupInterface`
+- `MetricsManagerInterface::make` now return `MetricInterface` or `MetricsGroupInterface` (method signature changed)
 
 ## v1.0.1
 
