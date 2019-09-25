@@ -20,7 +20,7 @@ interface MetricsManagerInterface
     public function make(string $metric_abstract);
 
     /**
-     * Determine if metric or group class is registered.
+     * Determine if metric or metrics group class is registered.
      *
      * @param string $metric_class
      *
@@ -29,7 +29,7 @@ interface MetricsManagerInterface
     public function exists(string $metric_class): bool;
 
     /**
-     * Determine if metric or group alias is registered.
+     * Determine if metric or metrics group alias is registered.
      *
      * @param string $metric_alias
      *
@@ -38,14 +38,14 @@ interface MetricsManagerInterface
     public function aliasExists(string $metric_alias): bool;
 
     /**
-     * Get all metric and group classes.
+     * Get all metric and metric group classes.
      *
      * @return string[]
      */
     public function classes(): array;
 
     /**
-     * Get all metric and group aliases.
+     * Get all metric and metric group aliases.
      *
      * @return string[]
      */

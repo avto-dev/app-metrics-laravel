@@ -68,7 +68,7 @@ class MetricsManager implements MetricsManagerInterface
 
         if (empty(\array_intersect(\class_implements($metric_class), $required_interfaces))) {
             throw new InvalidArgumentException(
-                "Class [{$metric_class}] must implements [" . \implode('|', $required_interfaces) . ']'
+                "Class [{$metric_class}] must implements one of [" . \implode('|', $required_interfaces) . ']'
             );
         }
 
@@ -114,13 +114,13 @@ class MetricsManager implements MetricsManagerInterface
             /** @var MetricInterface|MetricsGroupInterface $item */
             $item = $this->make($alias);
 
-            if ($item instanceof MetricsGroupInterface) {
+            if ($item instanceof MetricInterface) {
+                yield $item;
+            } elseif ($item instanceof MetricsGroupInterface) {
                 foreach ($item->metrics() as $metric) {
                     yield $metric;
                 }
             }
-
-            yield $item;
         }
     }
 
