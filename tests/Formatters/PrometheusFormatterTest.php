@@ -87,7 +87,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_one = new FooMetric;
         $metric_two = new BarMetric;
 
-        $collection = new class ($metric_one, $metric_two) implements MetricsCollectionInterface {
+        $collection = new class($metric_one, $metric_two) implements MetricsCollectionInterface {
             /**
              * @var MetricInterface
              */
@@ -131,7 +131,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_one = new FooMetric;
         $metric_two = new BarMetric;
 
-        $collection = new class ($metric_one) implements MetricsCollectionInterface {
+        $collection = new class($metric_one) implements MetricsCollectionInterface {
             /**
              * @var MetricInterface
              */

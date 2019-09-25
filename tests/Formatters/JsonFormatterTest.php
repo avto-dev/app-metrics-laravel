@@ -11,7 +11,6 @@ use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
-use spec\Prophecy\Doubler\Generator\ClassCreatorSpec;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsCollectionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
@@ -130,7 +129,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
             public function metrics(): iterable
             {
                 return [
-                    new FooMetric
+                    new FooMetric,
                 ];
             }
         };
