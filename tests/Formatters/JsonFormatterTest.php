@@ -9,10 +9,10 @@ use AvtoDev\AppMetrics\Formatters\JsonFormatter;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 

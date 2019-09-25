@@ -31,8 +31,8 @@ class MetricsManager implements MetricsManagerInterface
      * Create a new metrics manager instance.
      *
      * @param Container $container
-     * @param string[] $metrics Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
-     *                          'blah' => Metrics\MetricsGroup::class]`
+     * @param string[]  $metrics   Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
+     *                             'blah' => Metrics\MetricsGroup::class]`
      *
      * @throws InvalidArgumentException If wrong metrics array passed
      */

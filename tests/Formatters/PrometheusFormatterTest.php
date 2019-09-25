@@ -9,11 +9,11 @@ use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Formatters\PrometheusFormatter;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 
@@ -87,7 +87,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_one = new FooMetric;
         $metric_two = new BarMetric;
 
-        $collection = new class ($metric_one, $metric_two) implements MetricsGroupInterface {
+        $collection = new class($metric_one, $metric_two) implements MetricsGroupInterface {
             /**
              * @var MetricInterface
              */
@@ -131,7 +131,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $metric_one = new FooMetric;
         $metric_two = new BarMetric;
 
-        $collection = new class ($metric_one) implements MetricsGroupInterface {
+        $collection = new class($metric_one) implements MetricsGroupInterface {
             /**
              * @var MetricInterface
              */

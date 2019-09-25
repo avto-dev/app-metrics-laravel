@@ -7,8 +7,8 @@ namespace AvtoDev\AppMetrics\Formatters;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
-use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
+use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
