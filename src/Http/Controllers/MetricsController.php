@@ -7,7 +7,6 @@ namespace AvtoDev\AppMetrics\Http\Controllers;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\MetricsManagerInterface;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -53,9 +52,7 @@ class MetricsController extends \Illuminate\Routing\Controller
 
             $metrics = empty($only)
                 ? $metrics_manager->iterateAll()
-                : \array_map(static function (string $metric_alias) use ($metrics_manager): MetricInterface {
-                    return $metrics_manager->make($metric_alias);
-                }, $only);
+                : $metrics_manager->iterate($only);
 
             $headers = $formatter instanceof UseCustomHttpHeadersInterface
                 ? $formatter->httpHeaders()

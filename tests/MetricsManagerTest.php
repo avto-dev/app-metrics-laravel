@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use AvtoDev\AppMetrics\MetricsManager;
 use AvtoDev\AppMetrics\MetricsManagerInterface;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooGroup;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 
@@ -30,8 +31,9 @@ class MetricsManagerTest extends AbstractUnitTestCase
         parent::setUp();
 
         $this->manager = new MetricsManager($this->app, [
-            'foo' => FooMetric::class,
+            'foo'     => FooMetric::class,
             BarMetric::class,
+            'grouped' => FooGroup::class,
         ]);
     }
 
@@ -51,6 +53,8 @@ class MetricsManagerTest extends AbstractUnitTestCase
         $this->assertInstanceOf(FooMetric::class, $this->manager->make(FooMetric::class));
         $this->assertInstanceOf(FooMetric::class, $this->manager->make('foo'));
         $this->assertInstanceOf(BarMetric::class, $this->manager->make(BarMetric::class));
+        $this->assertInstanceOf(FooGroup::class, $this->manager->make(FooGroup::class));
+        $this->assertInstanceOf(FooGroup::class, $this->manager->make('grouped'));
 
         $this->assertSame('foo value', $this->manager->make(FooMetric::class)->value());
         $this->assertSame('foo', $this->manager->make(FooMetric::class)->name());
@@ -81,6 +85,11 @@ class MetricsManagerTest extends AbstractUnitTestCase
 
         $this->manager->addFactory(FooMetric::class);
         $this->assertInstanceOf(FooMetric::class, $this->manager->make(FooMetric::class));
+
+        $this->assertFalse($this->manager->exists(FooGroup::class));
+
+        $this->manager->addFactory(FooGroup::class);
+        $this->assertInstanceOf(FooGroup::class, $this->manager->make(FooGroup::class));
     }
 
     /**
@@ -132,10 +141,13 @@ class MetricsManagerTest extends AbstractUnitTestCase
     {
         $this->assertTrue($this->manager->exists(FooMetric::class));
         $this->assertTrue($this->manager->exists(BarMetric::class));
+        $this->assertTrue($this->manager->exists(FooGroup::class));
         $this->assertTrue($this->manager->aliasExists('foo'));
+        $this->assertTrue($this->manager->aliasExists('grouped'));
 
         $this->assertFalse($this->manager->aliasExists(FooMetric::class));
         $this->assertFalse($this->manager->aliasExists(BarMetric::class));
+        $this->assertFalse($this->manager->aliasExists(FooGroup::class));
         $this->assertFalse($this->manager->exists(Str::random()));
         $this->assertFalse($this->manager->exists(stdClass::class));
     }
@@ -143,10 +155,10 @@ class MetricsManagerTest extends AbstractUnitTestCase
     /**
      * @return void
      */
-    public function testAllIterator(): void
+    public function testCustomIterator(): void
     {
         $all = [];
-        \array_push($all, ...$this->manager->iterateAll());
+        \array_push($all, ...$this->manager->iterate(['foo', BarMetric::class]));
 
         $this->assertInstanceOf(FooMetric::class, $all[0]);
         $this->assertInstanceOf(BarMetric::class, $all[1]);
@@ -157,9 +169,44 @@ class MetricsManagerTest extends AbstractUnitTestCase
     /**
      * @return void
      */
+    public function testCustomIteratorPassingGroup(): void
+    {
+        $all = [];
+        \array_push($all, ...$this->manager->iterate(['grouped']));
+
+        $this->assertInstanceOf(FooMetric::class, $all[0]);
+        $this->assertInstanceOf(BarMetric::class, $all[1]);
+
+        $this->assertCount(2, $all);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAllIteratorWithGroup(): void
+    {
+        $all = [];
+        \array_push($all, ...$this->manager->iterateAll());
+
+        $this->assertInstanceOf(FooMetric::class, $all[0]);
+        $this->assertInstanceOf(BarMetric::class, $all[1]);
+        $this->assertInstanceOf(FooMetric::class, $all[2]);
+        $this->assertInstanceOf(BarMetric::class, $all[3]);
+
+        $this->assertNotSame($all[0], $all[2]);
+        $this->assertNotSame($all[1], $all[3]);
+
+        $this->assertCount(4, $all);
+    }
+
+    /**
+     * @return void
+     */
     public function testClassesGetter(): void
     {
-        $this->assertEmpty(\array_diff([FooMetric::class, BarMetric::class], $this->manager->classes()));
+        $this->assertEmpty(
+            \array_diff([FooMetric::class, BarMetric::class, FooGroup::class], $this->manager->classes())
+        );
     }
 
     /**
@@ -167,6 +214,6 @@ class MetricsManagerTest extends AbstractUnitTestCase
      */
     public function testAliasesGetter(): void
     {
-        $this->assertEmpty(\array_diff(['foo'], $this->manager->aliases()));
+        $this->assertEmpty(\array_diff(['foo', 'grouped'], $this->manager->aliases()));
     }
 }

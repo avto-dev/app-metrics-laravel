@@ -7,6 +7,7 @@ namespace AvtoDev\AppMetrics\Formatters;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
@@ -33,27 +34,44 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
         $result = [];
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricInterface) {
-                $item = [
-                    'value' => $metric->value(),
-                ];
-
-                if ($metric instanceof HasDescriptionInterface) {
-                    $item['description'] = $metric->description();
+            if ($metric instanceof MetricsGroupInterface) {
+                foreach ($metric->metrics() as $collection_item) {
+                    if ($collection_item instanceof MetricInterface) {
+                        $result[] = (object) $this->metricToArray($collection_item);
+                    }
                 }
-
-                if ($metric instanceof HasLabelsInterface) {
-                    $item['labels'] = $metric->labels();
-                }
-
-                if ($metric instanceof HasTypeInterface) {
-                    $item['type'] = $metric->type();
-                }
-
-                $result[$metric->name()] = (object) $item;
+            } elseif ($metric instanceof MetricInterface) {
+                $result[] = (object) $this->metricToArray($metric);
             }
         }
 
-        return (string) \json_encode((object) $result, $options);
+        return (string) \json_encode($result, $options);
+    }
+
+    /**
+     * @param MetricInterface $metric
+     *
+     * @return array
+     */
+    protected function metricToArray(MetricInterface $metric): array
+    {
+        $result = [
+            'name'  => $metric->name(),
+            'value' => $metric->value(),
+        ];
+
+        if ($metric instanceof HasDescriptionInterface) {
+            $result['description'] = $metric->description();
+        }
+
+        if ($metric instanceof HasLabelsInterface) {
+            $result['labels'] = $metric->labels();
+        }
+
+        if ($metric instanceof HasTypeInterface) {
+            $result['type'] = $metric->type();
+        }
+
+        return $result;
     }
 }

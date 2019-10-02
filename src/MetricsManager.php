@@ -8,6 +8,7 @@ use Closure;
 use InvalidArgumentException;
 use Illuminate\Contracts\Container\Container;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
+use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 
 class MetricsManager implements MetricsManagerInterface
 {
@@ -27,10 +28,11 @@ class MetricsManager implements MetricsManagerInterface
     protected $container;
 
     /**
-     * Create a new MetricsManager instance.
+     * Create a new metrics manager instance.
      *
      * @param Container $container
-     * @param string[]  $metrics   Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class]`
+     * @param string[]  $metrics   Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
+     *                             'blah' => Metrics\MetricsGroup::class]`
      *
      * @throws InvalidArgumentException If wrong metrics array passed
      */
@@ -38,8 +40,8 @@ class MetricsManager implements MetricsManagerInterface
     {
         $this->container = $container;
 
-        foreach ($metrics as $alias => $metric_class) {
-            $this->addFactory($metric_class, \is_string($alias)
+        foreach ($metrics as $alias => $metric_or_group_class) {
+            $this->addFactory($metric_or_group_class, \is_string($alias)
                 ? $alias
                 : null);
         }
@@ -55,15 +57,22 @@ class MetricsManager implements MetricsManagerInterface
      */
     public function addFactory(string $metric_class, ?string $alias = null): void
     {
+        static $required_interfaces = [
+            MetricInterface::class,
+            MetricsGroupInterface::class,
+        ];
+
         if (! \class_exists($metric_class)) {
             throw new InvalidArgumentException("Class [{$metric_class}] does not exists");
         }
 
-        if (! \in_array($contract = MetricInterface::class, \class_implements($metric_class), true)) {
-            throw new InvalidArgumentException("Class [{$metric_class}] must implements [{$contract}]");
+        if (empty(\array_intersect(\class_implements($metric_class), $required_interfaces))) {
+            throw new InvalidArgumentException(
+                "Class [{$metric_class}] must implements one of [" . \implode('|', $required_interfaces) . ']'
+            );
         }
 
-        $this->factories[$metric_class] = function () use ($metric_class): MetricInterface {
+        $this->factories[$metric_class] = function () use ($metric_class) {
             return $this->container->make($metric_class);
         };
 
@@ -75,7 +84,7 @@ class MetricsManager implements MetricsManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function make(string $metric_abstract): MetricInterface
+    public function make(string $metric_abstract)
     {
         if ($this->exists($metric_abstract)) {
             return $this->factories[$metric_abstract]();
@@ -93,8 +102,25 @@ class MetricsManager implements MetricsManagerInterface
      */
     public function iterateAll(): iterable
     {
-        foreach ($this->classes() as $class) {
-            yield $this->make($class);
+        return $this->iterate($this->classes());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function iterate(array $abstracts): iterable
+    {
+        foreach ($abstracts as $alias) {
+            /** @var MetricInterface|MetricsGroupInterface $item */
+            $item = $this->make($alias);
+
+            if ($item instanceof MetricInterface) {
+                yield $item;
+            } elseif ($item instanceof MetricsGroupInterface) {
+                foreach ($item->metrics() as $metric) {
+                    yield $metric;
+                }
+            }
         }
     }
 
