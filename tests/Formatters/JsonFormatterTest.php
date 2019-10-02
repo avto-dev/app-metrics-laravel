@@ -65,7 +65,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithNothingPassed(): void
     {
-        $this->assertSame('{}', $this->formatter->format([]));
+        $this->assertSame('[]', $this->formatter->format([]));
     }
 
     /**
@@ -76,8 +76,9 @@ class JsonFormatterTest extends AbstractUnitTestCase
         $metric_one = new FooMetric;
         $result     = \json_decode($this->formatter->format([$metric_one]), false);
 
-        $this->assertObjectHasAttribute($name = $metric_one->name(), $result);
-        $this->assertSame($metric_one->value(), $result->{$name}->value);
+        $this->assertCount(1, $result);
+        $this->assertSame($metric_one->name(), $result[0]->name);
+        $this->assertSame($metric_one->value(), $result[0]->value);
     }
 
     /**
@@ -89,11 +90,13 @@ class JsonFormatterTest extends AbstractUnitTestCase
         $metric_two = new BarMetric;
         $result     = \json_decode($this->formatter->format([$metric_one, $metric_two]), false);
 
-        $this->assertObjectHasAttribute($name_one = $metric_one->name(), $result);
-        $this->assertSame($metric_one->value(), $result->{$name_one}->value);
+        $this->assertCount(2, $result);
 
-        $this->assertObjectHasAttribute($name_two = $metric_two->name(), $result);
-        $this->assertSame($metric_two->value(), $result->{$name_two}->value);
+        $this->assertSame($metric_one->name(), $result[0]->name);
+        $this->assertSame($metric_one->value(), $result[0]->value);
+
+        $this->assertSame($metric_two->name(), $result[1]->name);
+        $this->assertSame($metric_two->value(), $result[1]->value);
     }
 
     /**
@@ -105,19 +108,22 @@ class JsonFormatterTest extends AbstractUnitTestCase
             public function metrics(): iterable
             {
                 return [
-                    new FooMetric,
-                    new BarMetric,
+                    $metric_one = new FooMetric,
+                    $metric_two = new BarMetric,
                 ];
             }
         };
 
         $result     = \json_decode($this->formatter->format([$collection]), false);
+        $metrics = $collection->metrics();
 
-        $this->assertObjectHasAttribute($name_one = ($metric_one = new FooMetric)->name(), $result);
-        $this->assertSame($metric_one->value(), $result->{$name_one}->value);
+        $this->assertCount(2, $result);
 
-        $this->assertObjectHasAttribute($name_two = ($metric_two = new BarMetric)->name(), $result);
-        $this->assertSame($metric_two->value(), $result->{$name_two}->value);
+        $this->assertSame($metrics[0]->name(), $result[0]->name);
+        $this->assertSame($metrics[0]->value(), $result[0]->value);
+
+        $this->assertSame($metrics[1]->name(), $result[1]->name);
+        $this->assertSame($metrics[1]->value(), $result[1]->value);
     }
 
     /**
@@ -135,12 +141,15 @@ class JsonFormatterTest extends AbstractUnitTestCase
         };
 
         $result     = \json_decode($this->formatter->format([$collection, $metric = new BarMetric]), false);
+        $metrics = $collection->metrics();
 
-        $this->assertObjectHasAttribute($name_one = ($metric_one = new FooMetric)->name(), $result);
-        $this->assertSame($metric_one->value(), $result->{$name_one}->value);
+        $this->assertCount(2, $result);
 
-        $this->assertObjectHasAttribute($name_two = $metric->name(), $result);
-        $this->assertSame($metric->value(), $result->{$name_two}->value);
+        $this->assertSame($metrics[0]->name(), $result[0]->name);
+        $this->assertSame($metrics[0]->value(), $result[0]->value);
+
+        $this->assertSame($metric->name(), $result[1]->name);
+        $this->assertSame($metric->value(), $result[1]->value);
     }
 
     /**
@@ -185,10 +194,11 @@ class JsonFormatterTest extends AbstractUnitTestCase
 
         $result = \json_decode($this->formatter->format([$metric]), false);
 
-        $this->assertObjectHasAttribute($name = $metric->name(), $result);
-        $this->assertSame($metric->value(), $result->{$name}->value);
-        $this->assertSame($metric->description(), $result->{$name}->description);
-        $this->assertEquals((object) $metric->labels(), $result->{$name}->labels);
-        $this->assertSame($metric->type(), $result->{$name}->type);
+        $this->assertCount(1, $result);
+        $this->assertSame($metric->name(), $result[0]->name);
+        $this->assertSame($metric->value(), $result[0]->value);
+        $this->assertSame($metric->description(), $result[0]->description);
+        $this->assertEquals((object) $metric->labels(), $result[0]->labels);
+        $this->assertSame($metric->type(), $result[0]->type);
     }
 }

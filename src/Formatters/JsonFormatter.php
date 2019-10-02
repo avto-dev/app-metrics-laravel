@@ -37,15 +37,15 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
             if ($metric instanceof MetricsGroupInterface) {
                 foreach ($metric->metrics() as $collection_item) {
                     if ($collection_item instanceof MetricInterface) {
-                        $result[$collection_item->name()] = (object) $this->metricToArray($collection_item);
+                        $result[] = (object) $this->metricToArray($collection_item);
                     }
                 }
             } elseif ($metric instanceof MetricInterface) {
-                $result[$metric->name()] = (object) $this->metricToArray($metric);
+                $result[] = (object) $this->metricToArray($metric);
             }
         }
 
-        return (string) \json_encode((object) $result, $options);
+        return (string) \json_encode($result, $options);
     }
 
     /**
@@ -56,6 +56,7 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
     protected function metricToArray(MetricInterface $metric): array
     {
         $result = [
+            'name'  => $metric->name(),
             'value' => $metric->value(),
         ];
 
