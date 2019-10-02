@@ -18,7 +18,7 @@ Using this package provides easy way for integration metrics endpoint into your 
 Require this package with composer using the following command:
 
 ```bash
-$ composer require avto-dev/app-metrics-laravel "^1.0"
+$ composer require avto-dev/app-metrics-laravel "^2.0"
 ```
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
@@ -45,7 +45,7 @@ When your metric classes are ready and successfully registered into configuratio
 
 ```bash
 $ curl http://127.0.0.1:8080/metrics?format=json
-{"some_metric":{"value": 1, "labels": {"foo":"bar"}}}
+[{"name": "some_metric", "value": 1, "labels": {"foo":"bar"}}]
 
 $ curl http://127.0.0.1:8080/metrics?format=prometheus
 some_metric{foo="bar"} 1
