@@ -115,7 +115,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
         };
 
         $result     = \json_decode($this->formatter->format([$collection]), false);
-        $metrics = $collection->metrics();
+        $metrics    = $collection->metrics();
 
         $this->assertCount(2, $result);
 
@@ -141,7 +141,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
         };
 
         $result     = \json_decode($this->formatter->format([$collection, $metric = new BarMetric]), false);
-        $metrics = $collection->metrics();
+        $metrics    = $collection->metrics();
 
         $this->assertCount(2, $result);
 
