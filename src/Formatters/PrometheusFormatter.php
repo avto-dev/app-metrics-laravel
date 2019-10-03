@@ -152,7 +152,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
      */
     protected function formatType(string $type): string
     {
-        switch ($type = Str::upper($type)) {
+        switch ($type = Str::lower($type)) {
             case HasTypeInterface::TYPE_COUNTER:
             case HasTypeInterface::TYPE_GAUGE:
             case HasTypeInterface::TYPE_HISTOGRAM:
