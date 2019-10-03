@@ -189,7 +189,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
         $result = $this->formatter->format([$mock]);
 
         $this->assertSame(
-            "# HELP blah fake\n# TYPE blah UNTYPED\nblah{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1",
+            "# HELP blah fake\n# TYPE blah untyped\nblah{foo=\"1\",bar=\"3.14\",baz=\"yahoo\"} 1",
             $result
         );
     }
@@ -200,18 +200,18 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     public function testFormatType(): void
     {
         $data_sets = [
-            ['counter', 'COUNTER'],
-            ['COUNTER', 'COUNTER'],
-            ['histogram', 'HISTOGRAM'],
-            ['HISTOGRAM', 'HISTOGRAM'],
-            ['gauge', 'GAUGE'],
-            ['GAUGE', 'GAUGE'],
-            ['summary', 'SUMMARY'],
-            ['SUMMARY', 'SUMMARY'],
-            ['foo', 'UNTYPED'],
-            ['bar', 'UNTYPED'],
-            ['untyped', 'UNTYPED'],
-            ['', 'UNTYPED'],
+            ['counter', 'counter'],
+            ['COUNTER', 'counter'],
+            ['histogram', 'histogram'],
+            ['HISTOGRAM', 'histogram'],
+            ['gauge', 'gauge'],
+            ['GAUGE', 'gauge'],
+            ['summary', 'summary'],
+            ['SUMMARY', 'summary'],
+            ['foo', 'untyped'],
+            ['bar', 'untyped'],
+            ['untyped', 'untyped'],
+            ['', 'untyped'],
         ];
 
         foreach ($data_sets as [$input, $expected]) {
@@ -303,13 +303,13 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             "\t",
             'some_string',
         ];
-        $mock = $this->getMetricMock('foo', true, 'UNTYPED');
+        $mock = $this->getMetricMock('foo', true, 'untyped');
 
         foreach ($data_sets as $breaker) {
             $this->formatter->setLineBreaker($breaker);
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~# TYPE foo UNTYPED{$breaker}~", $result);
+            $this->assertRegExp("~# TYPE foo untyped{$breaker}~", $result);
         }
     }
 
