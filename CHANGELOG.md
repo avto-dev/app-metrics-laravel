@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Fixed
 
-- Prometheus metric types now in lower case
+- Incorrect prometheus metric types case
 
 ## v2.0.1
 
