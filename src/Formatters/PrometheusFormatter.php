@@ -10,6 +10,7 @@ use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
@@ -47,14 +48,18 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         $result = '';
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricsGroupInterface) {
-                foreach ($metric->metrics() as $collection_item) {
-                    if ($collection_item instanceof MetricInterface) {
-                        $result .= $this->metricToString($collection_item);
+            try {
+                if ($metric instanceof MetricsGroupInterface) {
+                    foreach ($metric->metrics() as $collection_item) {
+                        if ($collection_item instanceof MetricInterface) {
+                            $result .= $this->metricToString($collection_item);
+                        }
                     }
+                } elseif ($metric instanceof MetricInterface) {
+                    $result .= $this->metricToString($metric);
                 }
-            } elseif ($metric instanceof MetricInterface) {
-                $result .= $this->metricToString($metric);
+            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
+                //
             }
         }
 

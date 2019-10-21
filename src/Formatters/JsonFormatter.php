@@ -9,6 +9,7 @@ use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\ShouldBeSkippedMetricExceptionInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
@@ -34,14 +35,18 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
         $result = [];
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricsGroupInterface) {
-                foreach ($metric->metrics() as $collection_item) {
-                    if ($collection_item instanceof MetricInterface) {
-                        $result[] = (object) $this->metricToArray($collection_item);
+            try {
+                if ($metric instanceof MetricsGroupInterface) {
+                    foreach ($metric->metrics() as $collection_item) {
+                        if ($collection_item instanceof MetricInterface) {
+                            $result[] = (object) $this->metricToArray($collection_item);
+                        }
                     }
+                } elseif ($metric instanceof MetricInterface) {
+                    $result[] = (object) $this->metricToArray($metric);
                 }
-            } elseif ($metric instanceof MetricInterface) {
-                $result[] = (object) $this->metricToArray($metric);
+            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
+                //
             }
         }
 
