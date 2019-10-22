@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
-use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
+use RuntimeException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Formatters\JsonFormatter;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
@@ -16,7 +16,7 @@ use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
-use \RuntimeException;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\JsonFormatter<extended>
