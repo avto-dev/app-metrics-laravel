@@ -6,7 +6,7 @@ namespace AvtoDev\AppMetrics\Exceptions;
 
 use RuntimeException;
 
-final class ShouldBeSkippedMetricException extends RuntimeException implements ShouldBeSkippedMetricExceptionInterface
+class ShouldBeSkippedMetricException extends RuntimeException implements ShouldBeSkippedMetricExceptionInterface
 {
 
 }
