@@ -17,7 +17,7 @@ class ThrowableToExceptionTraitTest extends AbstractUnitTestCase
     /**
      * @return void;
      */
-    public function testReportThrowable(): void
+    public function testConvertThrowableToException(): void
     {
         $exception = new LogicException('Test logic exception');
         $converted = $this->convertThrowableToException($exception);
