@@ -8,4 +8,5 @@ use RuntimeException;
 
 class ShouldBeSkippedMetricException extends RuntimeException implements ShouldBeSkippedMetricExceptionInterface
 {
+    //
 }
