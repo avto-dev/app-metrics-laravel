@@ -29,7 +29,7 @@ class ThrowableToExceptionTraitTest extends AbstractUnitTestCase
 
         $exception = new \Error('Test error');
         $converted = $this->convertThrowableToException($exception);
-        // Error should be converted to exception
+        // Error should be converted to RuntimeException
         $this->assertInstanceOf(RuntimeException::class, $converted);
         $this->assertSame($exception->getMessage(), $converted->getMessage());
         $this->assertSame($exception->getCode(), $converted->getCode());
