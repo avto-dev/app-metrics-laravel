@@ -11,18 +11,23 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
+use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
-    use WithThrowableReportingTrait;
+    use ThrowableToExceptionTrait;
 
     /**
      * @var string
      */
     protected $new_line = \PHP_EOL;
+
+    /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
 
     /**
      * Create prometheus formatter.
@@ -73,7 +78,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
                     $result .= $this->metricToString($metric);
                 }
             } catch (ShouldBeSkippedMetricExceptionInterface $e) {
-                $this->reportThrowable($e);
+                $this->exception_handler->report($this->convertThrowableToException($e));
             }
         }
 

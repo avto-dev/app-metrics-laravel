@@ -10,12 +10,12 @@ use Illuminate\Contracts\Container\Container;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
-use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
+use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class MetricsManager implements MetricsManagerInterface
 {
-    use WithThrowableReportingTrait;
+    use ThrowableToExceptionTrait;
 
     /**
      * @var Closure[]
@@ -31,6 +31,11 @@ class MetricsManager implements MetricsManagerInterface
      * @var Container
      */
     protected $container;
+
+    /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
 
     /**
      * Create a new metrics manager instance.
@@ -128,7 +133,7 @@ class MetricsManager implements MetricsManagerInterface
                     }
                 }
             } catch (ShouldBeSkippedMetricExceptionInterface $e) {
-                $this->reportThrowable($e);
+                $this->exception_handler->report($this->convertThrowableToException($e));
             }
         }
     }

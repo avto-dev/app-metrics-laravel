@@ -10,12 +10,17 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
+use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
-    use WithThrowableReportingTrait;
+    use ThrowableToExceptionTrait;
+
+    /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
 
     /**
      * Create json formatter.
@@ -60,7 +65,7 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
                     $result[] = (object) $this->metricToArray($metric);
                 }
             } catch (ShouldBeSkippedMetricExceptionInterface $e) {
-                $this->reportThrowable($e);
+                $this->exception_handler->report($this->convertThrowableToException($e));
             }
         }
 
