@@ -77,6 +77,8 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     }
 
     /**
+     * Checks if exception with passed class name and message was handled.
+     *
      * @param string $exception_class_name
      * @param string $exception_message
      *
