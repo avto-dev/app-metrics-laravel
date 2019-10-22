@@ -14,10 +14,6 @@ trait ThrowableToExceptionTrait
      */
     protected function convertThrowableToException(Throwable $e): Exception
     {
-        if ($e instanceof Exception) {
-            return $e;
-        }
-
-        return new \RuntimeException($e->getMessage(), $e->getCode(), $e);
+        return $e instanceof Exception ? $e : new \RuntimeException($e->getMessage(), $e->getCode(), $e);
     }
 }
