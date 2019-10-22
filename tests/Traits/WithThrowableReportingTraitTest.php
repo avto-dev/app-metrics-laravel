@@ -55,6 +55,5 @@ class WithThrowableReportingTraitTest extends AbstractUnitTestCase
             // Error should be transformed to RuntimeException
             $this->exception_handler->hasException(RuntimeException::class, 'Test error')
         );
-
     }
 }

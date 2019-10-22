@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
-use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingByValueMethodMetric;
-use Mockery as m;
 use RuntimeException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Formatters\JsonFormatter;
@@ -19,8 +17,9 @@ use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
-use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingByValueMethodMetric;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\JsonFormatter<extended>
@@ -45,7 +44,7 @@ class JsonFormatterTest extends AbstractUnitTestCase
         parent::setUp();
 
         $this->exception_handler = new ExceptionHandlerStub();
-        $this->formatter = new JsonFormatter($this->exception_handler);
+        $this->formatter         = new JsonFormatter($this->exception_handler);
     }
 
     /**

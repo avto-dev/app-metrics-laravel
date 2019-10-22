@@ -5,8 +5,6 @@ declare(strict_types = 1);
 namespace AvtoDev\AppMetrics\Tests;
 
 use stdClass;
-use Generator;
-use Mockery as m;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use AvtoDev\AppMetrics\MetricsManager;
@@ -15,9 +13,9 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooGroup;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
-use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingByConstructorMetric;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 /**
  * @covers \AvtoDev\AppMetrics\MetricsManager<extended>
