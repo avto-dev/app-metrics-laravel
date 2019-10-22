@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace AvtoDev\AppMetrics\Tests\Traits;
 
-use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
-use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
-use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
-use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
-use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 use LogicException;
 use RuntimeException;
+use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
+use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
+use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 class WithThrowableReportingTraitTest extends AbstractUnitTestCase
 {
@@ -31,20 +30,20 @@ class WithThrowableReportingTraitTest extends AbstractUnitTestCase
      */
     public function testReportThrowable(): void
     {
-        $exception = new LogicException('Test exception');
+        $exception = new LogicException('Test logic exception');
         $this->reportThrowable($exception);
 
         $this->assertSame(1, $this->exception_handler->getCallsCount('report'));
         $this->assertTrue(
-            $this->exception_handler->hasException(LogicException::class, 'Test exception')
+            $this->exception_handler->hasException(LogicException::class, 'Test logic exception')
         );
 
-        $exception = new ShouldBeSkippedException('Test exception');
+        $exception = new ShouldBeSkippedException('Test skipping exception');
         $this->reportThrowable($exception);
 
         $this->assertSame(2, $this->exception_handler->getCallsCount('report'));
         $this->assertTrue(
-            $this->exception_handler->hasException(ShouldBeSkippedException::class, 'Test exception')
+            $this->exception_handler->hasException(ShouldBeSkippedException::class, 'Test skipping exception')
         );
 
         $exception = new \Error('Test error');
