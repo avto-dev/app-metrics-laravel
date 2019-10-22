@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace AvtoDev\AppMetrics\Tests\Traits;
 
-use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
-use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
-use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
-use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
-use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 use RuntimeException;
+use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
+use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
+use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 class WithThrowableReportingTraitTest extends AbstractUnitTestCase
 {
@@ -54,6 +53,5 @@ class WithThrowableReportingTraitTest extends AbstractUnitTestCase
             // Error should be transformed to RuntimeException
             $this->exception_handler->hasException(RuntimeException::class, 'Test error')
         );
-
     }
 }

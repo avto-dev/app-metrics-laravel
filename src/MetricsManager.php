@@ -4,13 +4,13 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics;
 
-use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
 use Closure;
 use InvalidArgumentException;
 use Illuminate\Contracts\Container\Container;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
+use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class MetricsManager implements MetricsManagerInterface
