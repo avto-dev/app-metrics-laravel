@@ -6,6 +6,7 @@ namespace AvtoDev\AppMetrics\Formatters;
 
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
@@ -13,6 +14,21 @@ use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
+    /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
+     * Create json formatter.
+     *
+     * @param ExceptionHandler $exception_handler
+     */
+    public function __construct(ExceptionHandler $exception_handler)
+    {
+        $this->exception_handler = $exception_handler;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -45,8 +61,12 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
                 } elseif ($metric instanceof MetricInterface) {
                     $result[] = (object) $this->metricToArray($metric);
                 }
-            } catch (ShouldBeSkippedMetricExceptionInterface $exception) {
-                //
+            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
+                if ($e instanceof \Exception) {
+                    $this->exception_handler->report($e);
+                } elseif ($e instanceof \Throwable) {
+                    $this->exception_handler->report(new \RuntimeException($e->getMessage(), $e->getCode(), $e));
+                }
             }
         }
 

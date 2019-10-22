@@ -6,6 +6,7 @@ namespace AvtoDev\AppMetrics;
 
 use Illuminate\Routing\Router;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -70,10 +71,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             static function (Container $container): MetricsManagerInterface {
                 /** @var ConfigRepository $config */
                 $config = $container->make(ConfigRepository::class);
+                $exception_handler = $container->make(ExceptionHandler::class);
 
                 return new MetricsManager(
                     $container,
-                    (array) $config->get(static::getConfigRootKeyName() . '.metric_classes')
+                    (array) $config->get(static::getConfigRootKeyName() . '.metric_classes'),
+                    $exception_handler
                 );
             }
         );

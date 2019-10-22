@@ -7,6 +7,7 @@ namespace AvtoDev\AppMetrics\Tests\Formatters;
 use Mockery as m;
 use RuntimeException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
@@ -18,6 +19,7 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\PrometheusFormatter<extended>
@@ -320,6 +322,16 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithShouldBeSkippedException(): void
     {
+        $exception_handler = m::mock(ExceptionHandler::class)
+            ->shouldReceive('report')
+            ->with(m::on(static function ($argument) {
+                return $argument instanceof ShouldBeSkippedMetricExceptionInterface
+                       && $argument->getMessage() === 'This metric should be skipped';
+            }))
+            ->getMock();
+
+        $this->formatter = new PrometheusFormatter($exception_handler);
+
         $metric = new class implements MetricInterface {
             public function name(): string
             {
@@ -334,9 +346,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
         $result = $this->formatter->format([$metric]);
 
-        $expected_output = "# ShouldBeSkippedException was thrown. Message [This metric should be skipped] in [/src/tests/Formatters/PrometheusFormatterTest.php] on line [331]\n# blah Nan";
-
-        $this->assertSame($expected_output, $result);
+        $this->assertSame('', $result);
     }
 
     /**

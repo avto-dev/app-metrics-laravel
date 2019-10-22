@@ -8,8 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
+- Interface `ShouldBeSkippedmetricExceptionInterface`
 - Exception `ShouldBeSkippedmetricException`
-- Possibility to skip metrics if it's `value()` method throws `ShouldBeSkippedMetricException`. `PrometheusFormatter` will comment this metric and add comment with information about catched exception. `JsonFormatter` will remove it from output.
+- Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface`. In this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from output.
 
 ## v2.1.0
 

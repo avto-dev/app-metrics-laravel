@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
+use Mockery as m;
 use RuntimeException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Formatters\JsonFormatter;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
@@ -17,6 +19,7 @@ use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\JsonFormatter<extended>
@@ -209,6 +212,16 @@ class JsonFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithShouldBeSkippedException(): void
     {
+        $exception_handler = m::mock(ExceptionHandler::class)
+            ->shouldReceive('report')
+            ->with(m::on(static function ($argument) {
+                return $argument instanceof ShouldBeSkippedMetricExceptionInterface
+                       && $argument->getMessage() === 'This metric should be skipped';
+            }))
+            ->getMock();
+
+        $this->formatter = new JsonFormatter($exception_handler);
+
         $metric = new class implements MetricInterface {
             public function name(): string
             {
@@ -221,9 +234,9 @@ class JsonFormatterTest extends AbstractUnitTestCase
             }
         };
 
-        $result = \json_decode($this->formatter->format([$metric]), false);
+        $result = $this->formatter->format([$metric]);
 
-        $this->assertEmpty($result);
+        $this->assertSame('[]', $result);
     }
 
     /**
