@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingByValueMethodMetric;
 use Mockery as m;
 use RuntimeException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
@@ -18,7 +19,7 @@ use AvtoDev\AppMetrics\Formatters\PrometheusFormatter;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
-use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 /**
@@ -32,13 +33,19 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     protected $formatter;
 
     /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->formatter = $this->app->make(PrometheusFormatter::class);
+        $this->exception_handler = new ExceptionHandlerStub();
+        $this->formatter = new PrometheusFormatter($this->exception_handler);
     }
 
     /**
@@ -322,31 +329,13 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
      */
     public function testFormatWithShouldBeSkippedException(): void
     {
-        $exception_handler = m::mock(ExceptionHandler::class)
-            ->shouldReceive('report')
-            ->with(m::on(static function ($argument) {
-                return $argument instanceof ShouldBeSkippedMetricExceptionInterface
-                       && $argument->getMessage() === 'This metric should be skipped';
-            }))
-            ->getMock();
-
-        $this->formatter = new PrometheusFormatter($exception_handler);
-
-        $metric = new class implements MetricInterface {
-            public function name(): string
-            {
-                return 'blah';
-            }
-
-            public function value()
-            {
-                throw new ShouldBeSkippedMetricException('This metric should be skipped');
-            }
-        };
-
-        $result = $this->formatter->format([$metric]);
+        $result = $this->formatter->format([new SkippingByValueMethodMetric()]);
 
         $this->assertSame('', $result);
+        $this->assertSame(1, $this->exception_handler->getCallsCount('report'));
+        $this->assertTrue(
+            $this->exception_handler->hasException(ShouldBeSkippedMetricExceptionInterface::class, 'Metric should be skipped')
+        );
     }
 
     /**

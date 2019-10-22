@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics;
 
+use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
 use Closure;
 use InvalidArgumentException;
 use Illuminate\Contracts\Container\Container;
@@ -14,6 +15,8 @@ use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class MetricsManager implements MetricsManagerInterface
 {
+    use WithThrowableReportingTrait;
+
     /**
      * @var Closure[]
      */
@@ -28,11 +31,6 @@ class MetricsManager implements MetricsManagerInterface
      * @var Container
      */
     protected $container;
-
-    /**
-     * @var ExceptionHandler
-     */
-    protected $exception_handler;
 
     /**
      * Create a new metrics manager instance.
@@ -130,11 +128,7 @@ class MetricsManager implements MetricsManagerInterface
                     }
                 }
             } catch (ShouldBeSkippedMetricExceptionInterface $e) {
-                if ($e instanceof \Exception) {
-                    $this->exception_handler->report($e);
-                } elseif ($e instanceof \Throwable) {
-                    $this->exception_handler->report(new \RuntimeException($e->getMessage(), $e->getCode(), $e));
-                }
+                $this->reportThrowable($e);
             }
         }
     }

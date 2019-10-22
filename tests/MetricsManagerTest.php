@@ -15,7 +15,8 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooGroup;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\BarMetric;
 use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
-use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingMetric;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingByConstructorMetric;
 use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 /**
@@ -29,11 +30,18 @@ class MetricsManagerTest extends AbstractUnitTestCase
     protected $manager;
 
     /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->exception_handler = new ExceptionHandlerStub();
 
         $this->manager = new MetricsManager(
             $this->app,
@@ -42,7 +50,7 @@ class MetricsManagerTest extends AbstractUnitTestCase
                 BarMetric::class,
                 'grouped' => FooGroup::class,
             ],
-            $this->app->make(ExceptionHandler::class)
+            $this->exception_handler
         );
     }
 
@@ -80,7 +88,7 @@ class MetricsManagerTest extends AbstractUnitTestCase
      */
     public function testAddFactory(): void
     {
-        $this->manager = new MetricsManager($this->app, [], $this->app->make(ExceptionHandler::class));
+        $this->manager = new MetricsManager($this->app, [], $this->exception_handler);
 
         $this->assertFalse($this->manager->exists(BarMetric::class));
         $this->assertFalse($this->manager->aliasExists($alias = Str::random()));
@@ -109,8 +117,8 @@ class MetricsManagerTest extends AbstractUnitTestCase
         $this->expectException(ShouldBeSkippedMetricExceptionInterface::class);
         $this->expectExceptionMessage('Metric should be skipped');
 
-        $this->manager->addFactory(SkippingMetric::class);
-        $this->manager->make(SkippingMetric::class);
+        $this->manager->addFactory(SkippingByConstructorMetric::class);
+        $this->manager->make(SkippingByConstructorMetric::class);
     }
 
     /**
@@ -118,21 +126,16 @@ class MetricsManagerTest extends AbstractUnitTestCase
      */
     public function testIterateWithSkippingMetric(): void
     {
-        $exception_handler = m::mock(ExceptionHandler::class)
-            ->shouldReceive('report')
-            ->with(m::on(static function ($argument) {
-                return $argument instanceof ShouldBeSkippedMetricExceptionInterface
-                    && $argument->getMessage() === 'Metric should be skipped';
-            }))
-            ->getMock();
+        $this->manager->addFactory(SkippingByConstructorMetric::class);
 
-        $this->manager = new MetricsManager($this->app, [], $exception_handler);
+        foreach ($this->manager->iterate([SkippingByConstructorMetric::class]) as $metric) {
+            $this->assertNotInstanceOf(SkippingByConstructorMetric::class, $metric);
+        }
 
-        $this->manager->addFactory(SkippingMetric::class);
-
-        /** @var Generator $iterable */
-        $iterable = $this->manager->iterate([SkippingMetric::class]);
-        $iterable->current();
+        $this->assertSame(1, $this->exception_handler->getCallsCount('report'));
+        $this->assertTrue(
+            $this->exception_handler->hasException(ShouldBeSkippedMetricExceptionInterface::class, 'Metric should be skipped')
+        );
     }
 
     /**

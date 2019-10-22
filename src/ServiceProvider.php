@@ -71,6 +71,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             static function (Container $container): MetricsManagerInterface {
                 /** @var ConfigRepository $config */
                 $config = $container->make(ConfigRepository::class);
+                /** @var ExceptionHandler $exception_handler */
                 $exception_handler = $container->make(ExceptionHandler::class);
 
                 return new MetricsManager(

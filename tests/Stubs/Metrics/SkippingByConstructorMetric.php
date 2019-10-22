@@ -5,18 +5,18 @@ declare(strict_types = 1);
 namespace AvtoDev\AppMetrics\Tests\Stubs\Metrics;
 
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
-use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
+use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
 
-class SkippingMetric implements MetricInterface
+class SkippingByConstructorMetric implements MetricInterface
 {
     /**
      * Creates stub-metric that should be skipped.
      *
-     * @throws ShouldBeSkippedMetricException
+     * @throws ShouldBeSkippedException
      */
     public function __construct()
     {
-        throw new ShouldBeSkippedMetricException('Metric should be skipped');
+        throw new ShouldBeSkippedException('Metric should be skipped');
     }
 
     /**

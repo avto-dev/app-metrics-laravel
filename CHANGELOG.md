@@ -9,8 +9,14 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Interface `ShouldBeSkippedmetricExceptionInterface`
-- Exception `ShouldBeSkippedmetricException`
+- Trait `WithThrowableReportingTraitTest.php`
 - Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface`. In this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from formatters output.
+
+### Changed
+
+- `MetricsManager` now skips metric which throws exception with interface`ShouldBeSkippedmetricExceptionInterface`
+during constructing
+- `PrometheusFormatter` and `JsonFormatters` now skips metric which throws exception with interface`ShouldBeSkippedmetricExceptionInterface` during formatting
 
 ## v2.1.0
 
