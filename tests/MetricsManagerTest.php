@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests;
 
+use stdClass;
 use Generator;
 use Mockery as m;
-use stdClass;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use AvtoDev\AppMetrics\MetricsManager;
