@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Formatters\JsonFormatter;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
@@ -15,6 +16,7 @@ use AvtoDev\AppMetrics\Tests\Stubs\Metrics\FooMetric;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
+use \RuntimeException;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\JsonFormatter<extended>
@@ -200,5 +202,50 @@ class JsonFormatterTest extends AbstractUnitTestCase
         $this->assertSame($metric->description(), $result[0]->description);
         $this->assertEquals((object) $metric->labels(), $result[0]->labels);
         $this->assertSame($metric->type(), $result[0]->type);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatWithShouldBeSkippedException(): void
+    {
+        $metric = new class implements MetricInterface {
+            public function name(): string
+            {
+                return 'blah';
+            }
+
+            public function value()
+            {
+                throw new ShouldBeSkippedMetricException('This metric should be skipped');
+            }
+        };
+
+        $result = \json_decode($this->formatter->format([$metric]), false);
+
+        $this->assertEmpty($result);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatWithAnyOtherException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Something went wrong');
+
+        $metric = new class implements MetricInterface {
+            public function name(): string
+            {
+                return 'blah';
+            }
+
+            public function value()
+            {
+                throw new RuntimeException('Something went wrong');
+            }
+        };
+
+        $this->formatter->format([$metric]);
     }
 }

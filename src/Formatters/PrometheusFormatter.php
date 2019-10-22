@@ -4,13 +4,13 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Formatters;
 
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 use Illuminate\Support\Str;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
-use AvtoDev\AppMetrics\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
@@ -48,18 +48,14 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         $result = '';
 
         foreach ($metrics as $metric) {
-            try {
-                if ($metric instanceof MetricsGroupInterface) {
-                    foreach ($metric->metrics() as $collection_item) {
-                        if ($collection_item instanceof MetricInterface) {
-                            $result .= $this->metricToString($collection_item);
-                        }
+            if ($metric instanceof MetricsGroupInterface) {
+                foreach ($metric->metrics() as $collection_item) {
+                    if ($collection_item instanceof MetricInterface) {
+                        $result .= $this->metricToString($collection_item);
                     }
-                } elseif ($metric instanceof MetricInterface) {
-                    $result .= $this->metricToString($metric);
                 }
-            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
-                //
+            } elseif ($metric instanceof MetricInterface) {
+                $result .= $this->metricToString($metric);
             }
         }
 
@@ -91,7 +87,21 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
             ? $this->formatLabels($metric->labels())
             : '';
 
-        return $result . "{$metric->name()}{$labels_string} {$this->formatValue($metric->value())}" . $this->new_line;
+        try {
+            $value = $this->formatValue($metric->value());
+        } catch (ShouldBeSkippedMetricExceptionInterface $exception) {
+            $value = PrometheusValuesDictionary::NAN;
+            $result .= \sprintf(
+                '# ShouldBeSkippedException was thrown. Message [%s] in [%s] on line [%d]',
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine()
+            ) . $this->new_line;
+
+            return $result . "# {$metric->name()}{$labels_string} {$value}" . $this->new_line;
+        }
+
+        return $result . "{$metric->name()}{$labels_string} {$value}" . $this->new_line;
     }
 
     /**

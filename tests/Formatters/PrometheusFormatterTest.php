@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricException;
 use Mockery as m;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
@@ -16,6 +17,7 @@ use AvtoDev\AppMetrics\Formatters\PrometheusFormatter;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
+use RuntimeException;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\PrometheusFormatter<extended>
@@ -311,6 +313,53 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $this->assertRegExp("~# TYPE foo untyped{$breaker}~", $result);
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatWithShouldBeSkippedException(): void
+    {
+        $metric = new class implements MetricInterface {
+            public function name(): string
+            {
+                return 'blah';
+            }
+
+            public function value()
+            {
+                throw new ShouldBeSkippedMetricException('This metric should be skipped');
+            }
+        };
+
+        $result = $this->formatter->format([$metric]);
+
+        $expected_output = "# ShouldBeSkippedException was thrown. Message [This metric should be skipped] in [/src/tests/Formatters/PrometheusFormatterTest.php] on line [331]\n# blah Nan";
+
+        $this->assertSame($expected_output, $result);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatWithAnyOtherException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Something went wrong');
+
+        $metric = new class implements MetricInterface {
+            public function name(): string
+            {
+                return 'blah';
+            }
+
+            public function value()
+            {
+                throw new RuntimeException('Something went wrong');
+            }
+        };
+
+        $this->formatter->format([$metric]);
     }
 
     /**

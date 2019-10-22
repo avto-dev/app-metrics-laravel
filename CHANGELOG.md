@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.2.0
+
+### Added
+
+- Exception `ShouldBeSkippedmetricException`
+- Possibility to skip metrics if it's `value()` method throws `ShouldBeSkippedMetricException`. `PrometheusFormatter` will comment this metric and add comment with information about catched exception. `JsonFormatter` will remove it from output.
+
 ## v2.1.0
 
 ### Changed
