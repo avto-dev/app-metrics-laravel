@@ -9,6 +9,7 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
 use AvtoDev\AppMetrics\Traits\WithThrowableReportingTrait;
 use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
+use LogicException;
 use RuntimeException;
 
 class WithThrowableReportingTraitTest extends AbstractUnitTestCase
@@ -30,12 +31,12 @@ class WithThrowableReportingTraitTest extends AbstractUnitTestCase
      */
     public function testReportThrowable(): void
     {
-        $exception = new RuntimeException('Test exception');
+        $exception = new LogicException('Test exception');
         $this->reportThrowable($exception);
 
         $this->assertSame(1, $this->exception_handler->getCallsCount('report'));
         $this->assertTrue(
-            $this->exception_handler->hasException(RuntimeException::class, 'Test exception')
+            $this->exception_handler->hasException(LogicException::class, 'Test exception')
         );
 
         $exception = new ShouldBeSkippedException('Test exception');
