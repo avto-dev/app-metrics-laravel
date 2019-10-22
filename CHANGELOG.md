@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.2.0
+
+### Added
+
+- Interface `ShouldBeSkippedmetricExceptionInterface`
+- Trait `WithThrowableReportingTraitTest.php`
+- Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface`. In this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from formatters output.
+
+### Changed
+
+- `MetricsManager` now skips metric which throws exception with interface`ShouldBeSkippedmetricExceptionInterface`
+during constructing
+- `PrometheusFormatter` and `JsonFormatters` now skips metric which throws exception with interface`ShouldBeSkippedmetricExceptionInterface` during formatting
+
 ## v2.1.0
 
 ### Changed

@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace AvtoDev\AppMetrics\Tests\Formatters;
 
 use Mockery as m;
+use RuntimeException;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
@@ -16,6 +18,9 @@ use AvtoDev\AppMetrics\Formatters\PrometheusFormatter;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
 use AvtoDev\AppMetrics\Formatters\MetricFormatterInterface;
 use AvtoDev\AppMetrics\Formatters\UseCustomHttpHeadersInterface;
+use AvtoDev\AppMetrics\Tests\Stubs\Metrics\SkippingByValueMethodMetric;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
+use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 /**
  * @covers \AvtoDev\AppMetrics\Formatters\PrometheusFormatter<extended>
@@ -28,13 +33,19 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
     protected $formatter;
 
     /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->formatter = $this->app->make(PrometheusFormatter::class);
+        $this->exception_handler = new ExceptionHandlerStub();
+        $this->formatter         = new PrometheusFormatter($this->exception_handler);
     }
 
     /**
@@ -311,6 +322,43 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $this->assertRegExp("~# TYPE foo untyped{$breaker}~", $result);
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatWithShouldBeSkippedException(): void
+    {
+        $result = $this->formatter->format([new SkippingByValueMethodMetric()]);
+
+        $this->assertSame('', $result);
+        $this->assertSame(1, $this->exception_handler->getCallsCount('report'));
+        $this->assertTrue(
+            $this->exception_handler->hasException(ShouldBeSkippedMetricExceptionInterface::class, 'Metric should be skipped')
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testFormatWithAnyOtherException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Something went wrong');
+
+        $metric = new class implements MetricInterface {
+            public function name(): string
+            {
+                return 'blah';
+            }
+
+            public function value()
+            {
+                throw new RuntimeException('Something went wrong');
+            }
+        };
+
+        $this->formatter->format([$metric]);
     }
 
     /**

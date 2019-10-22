@@ -7,17 +7,37 @@ namespace AvtoDev\AppMetrics\Formatters;
 use Illuminate\Support\Str;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
+    use ThrowableToExceptionTrait;
+
     /**
      * @var string
      */
     protected $new_line = \PHP_EOL;
+
+    /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
+     * Create prometheus formatter.
+     *
+     * @param ExceptionHandler $exception_handler
+     */
+    public function __construct(ExceptionHandler $exception_handler)
+    {
+        $this->exception_handler = $exception_handler;
+    }
 
     /**
      * @param string $nl
@@ -47,14 +67,18 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
         $result = '';
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricsGroupInterface) {
-                foreach ($metric->metrics() as $collection_item) {
-                    if ($collection_item instanceof MetricInterface) {
-                        $result .= $this->metricToString($collection_item);
+            try {
+                if ($metric instanceof MetricsGroupInterface) {
+                    foreach ($metric->metrics() as $collection_item) {
+                        if ($collection_item instanceof MetricInterface) {
+                            $result .= $this->metricToString($collection_item);
+                        }
                     }
+                } elseif ($metric instanceof MetricInterface) {
+                    $result .= $this->metricToString($metric);
                 }
-            } elseif ($metric instanceof MetricInterface) {
-                $result .= $this->metricToString($metric);
+            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
+                $this->exception_handler->report($this->convertThrowableToException($e));
             }
         }
 

@@ -79,6 +79,10 @@ Keep in mind that `Prometheus` accepts only numeric metrics values. This formatt
 | `'+Inf'` | `'+Inf'` |
 | `'-Inf'` | `'-Inf'` |
 
+### Skipping metrics
+
+If during construction or formatting metrics would be thrown exception that implements `AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface` then this metric would be skipped from formatters output and exception would be reported by `Illuminate\Contracts\Debug\ExceptionHandler` 
+
 ### Testing
 
 For package testing we use `phpunit` framework and `docker-ce` + `docker-compose` as develop environment. So, just write into your terminal after repository cloning:

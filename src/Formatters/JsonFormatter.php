@@ -6,12 +6,32 @@ namespace AvtoDev\AppMetrics\Formatters;
 
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
+use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInterface
 {
+    use ThrowableToExceptionTrait;
+
+    /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
+     * Create json formatter.
+     *
+     * @param ExceptionHandler $exception_handler
+     */
+    public function __construct(ExceptionHandler $exception_handler)
+    {
+        $this->exception_handler = $exception_handler;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,14 +54,18 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
         $result = [];
 
         foreach ($metrics as $metric) {
-            if ($metric instanceof MetricsGroupInterface) {
-                foreach ($metric->metrics() as $collection_item) {
-                    if ($collection_item instanceof MetricInterface) {
-                        $result[] = (object) $this->metricToArray($collection_item);
+            try {
+                if ($metric instanceof MetricsGroupInterface) {
+                    foreach ($metric->metrics() as $collection_item) {
+                        if ($collection_item instanceof MetricInterface) {
+                            $result[] = (object) $this->metricToArray($collection_item);
+                        }
                     }
+                } elseif ($metric instanceof MetricInterface) {
+                    $result[] = (object) $this->metricToArray($metric);
                 }
-            } elseif ($metric instanceof MetricInterface) {
-                $result[] = (object) $this->metricToArray($metric);
+            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
+                $this->exception_handler->report($this->convertThrowableToException($e));
             }
         }
 

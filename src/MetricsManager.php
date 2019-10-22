@@ -8,10 +8,15 @@ use Closure;
 use InvalidArgumentException;
 use Illuminate\Contracts\Container\Container;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
+use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
+use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 
 class MetricsManager implements MetricsManagerInterface
 {
+    use ThrowableToExceptionTrait;
+
     /**
      * @var Closure[]
      */
@@ -28,17 +33,22 @@ class MetricsManager implements MetricsManagerInterface
     protected $container;
 
     /**
+     * @var ExceptionHandler
+     */
+    protected $exception_handler;
+
+    /**
      * Create a new metrics manager instance.
      *
-     * @param Container $container
-     * @param string[]  $metrics   Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
-     *                             'blah' => Metrics\MetricsGroup::class]`
-     *
-     * @throws InvalidArgumentException If wrong metrics array passed
+     * @param Container        $container
+     * @param string[]         $metrics           Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
+     *                                            'blah' => Metrics\MetricsGroup::class]`
+     * @param ExceptionHandler $exception_handler
      */
-    public function __construct(Container $container, array $metrics)
+    public function __construct(Container $container, array $metrics, ExceptionHandler $exception_handler)
     {
-        $this->container = $container;
+        $this->container         = $container;
+        $this->exception_handler = $exception_handler;
 
         foreach ($metrics as $alias => $metric_or_group_class) {
             $this->addFactory($metric_or_group_class, \is_string($alias)
@@ -111,15 +121,19 @@ class MetricsManager implements MetricsManagerInterface
     public function iterate(array $abstracts): iterable
     {
         foreach ($abstracts as $alias) {
-            /** @var MetricInterface|MetricsGroupInterface $item */
-            $item = $this->make($alias);
+            try {
+                /** @var MetricInterface|MetricsGroupInterface $item */
+                $item = $this->make($alias);
 
-            if ($item instanceof MetricInterface) {
-                yield $item;
-            } elseif ($item instanceof MetricsGroupInterface) {
-                foreach ($item->metrics() as $metric) {
-                    yield $metric;
+                if ($item instanceof MetricInterface) {
+                    yield $item;
+                } elseif ($item instanceof MetricsGroupInterface) {
+                    foreach ($item->metrics() as $metric) {
+                        yield $metric;
+                    }
                 }
+            } catch (ShouldBeSkippedMetricExceptionInterface $e) {
+                $this->exception_handler->report($this->convertThrowableToException($e));
             }
         }
     }
