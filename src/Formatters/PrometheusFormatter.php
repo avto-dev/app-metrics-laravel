@@ -6,8 +6,8 @@ namespace AvtoDev\AppMetrics\Formatters;
 
 use Illuminate\Support\Str;
 use AvtoDev\AppMetrics\Metrics\MetricInterface;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasTypeInterface;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Metrics\MetricsGroupInterface;
 use AvtoDev\AppMetrics\Metrics\HasDescriptionInterface;
@@ -27,7 +27,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
     protected $exception_handler;
 
     /**
-     * create prometheus formatter
+     * create prometheus formatter.
      *
      * @param ExceptionHandler $exception_handler
      */

@@ -38,13 +38,13 @@ class MetricsManager implements MetricsManagerInterface
      * Create a new metrics manager instance.
      *
      * @param Container        $container
-     * @param string[]         $metrics Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
-     *                                  'blah' => Metrics\MetricsGroup::class]`
+     * @param string[]         $metrics           Metric class names, e.g.: `[FooMetric::class, 'bar' => BarMetric::class,
+     *                                            'blah' => Metrics\MetricsGroup::class]`
      * @param ExceptionHandler $exception_handler
      */
     public function __construct(Container $container, array $metrics, ExceptionHandler $exception_handler)
     {
-        $this->container = $container;
+        $this->container         = $container;
         $this->exception_handler = $exception_handler;
 
         foreach ($metrics as $alias => $metric_or_group_class) {
