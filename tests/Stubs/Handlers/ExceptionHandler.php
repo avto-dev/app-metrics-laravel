@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AvtoDev\AppMetrics\Tests\Stubs\Handlers;
 
-use Exception;
+use Throwable;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
@@ -23,14 +23,14 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * Received exceptions array.
      *
-     * @var Exception[]
+     * @var \Exception[]
      */
     protected $exceptions = [];
 
     /**
      * {@inheritdoc}
      */
-    public function report(Exception $e): void
+    public function report(Throwable $e): void
     {
         $this->calls['report']++;
         $this->exceptions[] = $e;
@@ -39,7 +39,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function shouldReport(Exception $e): bool
+    public function shouldReport(Throwable $e): bool
     {
         return true;
     }
@@ -47,7 +47,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function render($request, Exception $e): Response
+    public function render($request, Throwable $e): Response
     {
         $this->calls['render']++;
         $this->exceptions[] = $e;
@@ -58,7 +58,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function renderForConsole($output, Exception $e): void
+    public function renderForConsole($output, Throwable $e): void
     {
         $this->calls['renderForConsole']++;
         $this->exceptions[] = $e;
