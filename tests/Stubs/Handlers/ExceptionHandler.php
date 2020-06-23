@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AvtoDev\AppMetrics\Tests\Stubs\Handlers;
 
-use Throwable;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
