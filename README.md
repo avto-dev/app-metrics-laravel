@@ -5,7 +5,7 @@
 # Metrics endpoint for Laravel applications
 
 [![Version][badge_packagist_version]][link_packagist]
-[![Version][badge_php_version]][link_packagist]
+[![PHP Version][badge_php_version]][link_packagist]
 [![Build Status][badge_build_status]][link_build_status]
 [![Coverage][badge_coverage]][link_coverage]
 [![Downloads count][badge_downloads_count]][link_packagist]
@@ -28,7 +28,7 @@ $ composer require avto-dev/app-metrics-laravel "^2.0"
 After that you should "publish" package configuration file using next command:
 
 ```bash
-$ php ./artisan vendor:publish --provider='AvtoDev\AppMetrics\ServiceProvider'
+$ php ./artisan vendor:publish --provider="AvtoDev\\AppMetrics\\ServiceProvider"
 ```
 
 And configure it in the file `./config/metrics.php`.
@@ -65,23 +65,23 @@ Prometheus formatter uses some constants for metric's values(`Nan`, `+Inf`, `-In
 
 Keep in mind that `Prometheus` accepts only numeric metrics values. This formatter will try to cast metrics values to numeric format (`integer` or `float`). And will set `Nan` if casting to numeric is impossible. Examples for formatting values:
 
-| Input | Output |
-| ----- | ------ |
-| `1.2` | `'1.2'` |
-| `1` | `'1'` |
-| `true` | `'1'` |
-| `false` | `'0'` |
-| `'123'` | `'123'` |
-| `'12foo'` | `'Nan'` |
-| `['10', '20']` | `'Nan'` |
-| `null` | `'Nan'` |
-| `'Nan'` | `'Nan'` |
-| `'+Inf'` | `'+Inf'` |
-| `'-Inf'` | `'-Inf'` |
+Input          | Output
+-------------- | --------
+`1.2`          | `'1.2'`
+`1`            | `'1'`
+`true`         | `'1'`
+`false`        | `'0'`
+`'123'`        | `'123'`
+`'12foo'`      | `'Nan'`
+`['10', '20']` | `'Nan'`
+`null`         | `'Nan'`
+`'Nan'`        | `'Nan'`
+`'+Inf'`       | `'+Inf'`
+`'-Inf'`       | `'-Inf'`
 
 ### Skipping metrics
 
-If during construction or formatting metrics would be thrown exception that implements `AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface` then this metric would be skipped from formatters output and exception would be reported by `Illuminate\Contracts\Debug\ExceptionHandler` 
+If during construction or formatting metrics would be thrown exception that implements `AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface` then this metric would be skipped from formatters output and exception would be reported by `Illuminate\Contracts\Debug\ExceptionHandler`
 
 ### Testing
 
@@ -113,7 +113,7 @@ This is open-sourced software licensed under the [MIT License][link_license].
 
 [badge_packagist_version]:https://img.shields.io/packagist/v/avto-dev/app-metrics-laravel.svg?maxAge=180
 [badge_php_version]:https://img.shields.io/packagist/php-v/avto-dev/app-metrics-laravel.svg?longCache=true
-[badge_build_status]:https://travis-ci.org/avto-dev/app-metrics-laravel.svg?branch=master
+[badge_build_status]:https://img.shields.io/github/workflow/status/avto-dev/app-metrics-laravel/tests/master
 [badge_coverage]:https://img.shields.io/codecov/c/github/avto-dev/app-metrics-laravel/master.svg?maxAge=60
 [badge_downloads_count]:https://img.shields.io/packagist/dt/avto-dev/app-metrics-laravel.svg?maxAge=180
 [badge_license]:https://img.shields.io/packagist/l/avto-dev/app-metrics-laravel.svg?longCache=true

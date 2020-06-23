@@ -4,13 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.3.0
+
+### Changed
+
+- Maximal `illuminate/*` packages version now is `7.*`
+- CI completely moved from "Travis CI" to "Github Actions" _(travis builds disabled)_
+- Minimal required PHP version now is `7.2`
+
+### Added
+
+- PHP 7.4 is supported now
+
 ## v2.2.0
 
 ### Added
 
 - Interface `ShouldBeSkippedmetricExceptionInterface`
 - Trait `WithThrowableReportingTraitTest.php`
-- Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface`. In this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from formatters output.
+- Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface` (in this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from formatters output)
 
 ### Changed
 
@@ -36,7 +48,7 @@ during constructing
 
 ## v2.0.1
 
-### Fixed 
+### Fixed
 
 - Json formatter output example in `README.md`
 

@@ -75,7 +75,7 @@ class JsonFormatter implements MetricFormatterInterface, UseCustomHttpHeadersInt
     /**
      * @param MetricInterface $metric
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function metricToArray(MetricInterface $metric): array
     {

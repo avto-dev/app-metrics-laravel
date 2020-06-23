@@ -114,7 +114,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
     }
 
     /**
-     * @param string|int|float|bool|null|array $value
+     * @param string|int|float|bool|null|array<mixed> $value
      *
      * @return string
      *
@@ -188,7 +188,7 @@ class PrometheusFormatter implements MetricFormatterInterface, UseCustomHttpHead
     }
 
     /**
-     * @param array $labels
+     * @param array<mixed> $labels
      *
      * @return string
      *
