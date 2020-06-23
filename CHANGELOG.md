@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.3.0
+
+### Changed
+
+- Maximal `illuminate/*` packages version now is `7.*`
+- CI completely moved from "Travis CI" to "Github Actions" _(travis builds disabled)_
+- Minimal required PHP version now is `7.2`
+
+### Added
+
+- PHP 7.4 is supported now
+
 ## v2.2.0
 
 ### Added
@@ -36,7 +48,7 @@ during constructing
 
 ## v2.0.1
 
-### Fixed 
+### Fixed
 
 - Json formatter output example in `README.md`
 

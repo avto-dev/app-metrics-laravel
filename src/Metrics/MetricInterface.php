@@ -14,7 +14,7 @@ interface MetricInterface
     /**
      * Get metric value (or array of values).
      *
-     * @return string|int|float|array
+     * @return string|int|float|array<mixed>
      */
     public function value();
 }

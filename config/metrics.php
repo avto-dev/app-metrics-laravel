@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Metric Classes
@@ -70,5 +69,4 @@ return [
         'controller' => AvtoDev\AppMetrics\Http\Controllers\MetricsController::class,
         'secret'     => env('METRICS_HTTP_SECRET'),
     ],
-
 ];

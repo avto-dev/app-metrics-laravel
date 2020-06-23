@@ -30,7 +30,7 @@ class PrometheusValuesDictionary
     /**
      * Returns all dictionary entries.
      *
-     * @return array
+     * @return array<string>
      */
     public static function all(): array
     {
