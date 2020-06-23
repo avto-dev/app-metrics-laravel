@@ -30,7 +30,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function report(Throwable $e): void
+    public function report($e): void
     {
         $this->calls['report']++;
         $this->exceptions[] = $e;
@@ -39,7 +39,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function shouldReport(Throwable $e): bool
+    public function shouldReport($e): bool
     {
         return true;
     }
@@ -47,7 +47,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function render($request, Throwable $e): Response
+    public function render($request, $e): Response
     {
         $this->calls['render']++;
         $this->exceptions[] = $e;
@@ -58,7 +58,7 @@ class ExceptionHandler implements \Illuminate\Contracts\Debug\ExceptionHandler
     /**
      * {@inheritdoc}
      */
-    public function renderForConsole($output, Throwable $e): void
+    public function renderForConsole($output, $e): void
     {
         $this->calls['renderForConsole']++;
         $this->exceptions[] = $e;

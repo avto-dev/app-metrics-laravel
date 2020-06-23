@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Interface `ShouldBeSkippedmetricExceptionInterface`
 - Trait `WithThrowableReportingTraitTest.php`
-- Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface`. In this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from formatters output.
+- Possibility to skip metrics if during construction or formatting was thrown exception that implements `ShouldBeSkippedmetricExceptionInterface` (in this case exception would be reported (not thrown out) by `Illuminate\Contracts\Debug\ExceptionHandler` and metric would be skipped from formatters output)
 
 ### Changed
 
