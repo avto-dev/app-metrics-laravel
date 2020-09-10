@@ -16,4 +16,4 @@ composer.lock
 /coverage
 clover-file
 .DS_Store
-.php_cs.cache
+*.cache
