@@ -89,7 +89,7 @@ class FormattersManagerTest extends AbstractUnitTestCase
     public function testAddFactoryUsingNotExistingClassName(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp('~class.*not.*exists~i');
+        $this->expectExceptionMessageMatches('~class.*not.*exists~i');
 
         $this->manager->addFactory(Str::random(), Str::random());
     }
@@ -100,7 +100,7 @@ class FormattersManagerTest extends AbstractUnitTestCase
     public function testAddFactoryUsingWrongClassName(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageRegExp('~class.*must.*implements~i');
+        $this->expectExceptionMessageMatches('~class.*must.*implements~i');
 
         $this->manager->addFactory(Str::random(), \stdClass::class);
     }

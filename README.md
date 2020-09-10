@@ -111,6 +111,7 @@ If you will find any package errors, please, [make an issue][link_create_issue] 
 
 This is open-sourced software licensed under the [MIT License][link_license].
 
+[link_packagist]:https://packagist.org/packages/avto-dev/app-metrics-laravel
 [badge_packagist_version]:https://img.shields.io/packagist/v/avto-dev/app-metrics-laravel.svg?maxAge=180
 [badge_php_version]:https://img.shields.io/packagist/php-v/avto-dev/app-metrics-laravel.svg?longCache=true
 [badge_build_status]:https://img.shields.io/github/workflow/status/avto-dev/app-metrics-laravel/tests/master
