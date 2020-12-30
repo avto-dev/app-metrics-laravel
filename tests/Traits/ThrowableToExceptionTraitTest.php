@@ -10,12 +10,15 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
 use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
 
+/**
+ * @covers \AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait<extended>
+ */
 class ThrowableToExceptionTraitTest extends AbstractUnitTestCase
 {
     use ThrowableToExceptionTrait;
 
     /**
-     * @return void;
+     * @return void
      */
     public function testConvertThrowableToException(): void
     {
