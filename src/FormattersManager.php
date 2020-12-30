@@ -62,8 +62,9 @@ class FormattersManager implements FormattersManagerInterface
             throw new InvalidArgumentException("Class [{$formatter_class}] does not exists");
         }
 
-        if (! \in_array($contract = MetricFormatterInterface::class, \class_implements($formatter_class), true)) {
-            throw new InvalidArgumentException("Class [{$formatter_class}] must implements [{$contract}]");
+        if (! \is_array(\class_implements($formatter_class)) || ! \in_array($contract = MetricFormatterInterface::class, \class_implements($formatter_class), true)) {
+            $interface_name = $contract ?? MetricFormatterInterface::class;
+            throw new InvalidArgumentException("Class [{$formatter_class}] must implements [{$interface_name}]");
         }
 
         $this->factories[$alias] = function () use ($formatter_class): MetricFormatterInterface {

@@ -76,7 +76,7 @@ class MetricsManager implements MetricsManagerInterface
             throw new InvalidArgumentException("Class [{$metric_class}] does not exists");
         }
 
-        if (empty(\array_intersect(\class_implements($metric_class), $required_interfaces))) {
+        if (! \is_array(\class_implements($metric_class)) || empty(\array_intersect(\class_implements($metric_class), $required_interfaces))) {
             throw new InvalidArgumentException(
                 "Class [{$metric_class}] must implements one of [" . \implode('|', $required_interfaces) . ']'
             );
