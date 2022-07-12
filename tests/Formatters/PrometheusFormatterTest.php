@@ -230,8 +230,8 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
 
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~# TYPE foo {$expected}\n~", $result);
-            $this->assertRegExp('~foo 1~', $result);
+            $this->assertMatchesRegularExpression("~# TYPE foo {$expected}\n~", $result);
+            $this->assertMatchesRegularExpression('~foo 1~', $result);
         }
     }
 
@@ -320,7 +320,7 @@ class PrometheusFormatterTest extends AbstractUnitTestCase
             $this->formatter->setLineBreaker($breaker);
             $result = $this->formatter->format([$mock]);
 
-            $this->assertRegExp("~# TYPE foo untyped{$breaker}~", $result);
+            $this->assertMatchesRegularExpression("~# TYPE foo untyped{$breaker}~", $result);
         }
     }
 
