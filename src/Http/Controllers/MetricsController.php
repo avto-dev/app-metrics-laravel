@@ -43,22 +43,24 @@ class MetricsController extends \Illuminate\Routing\Controller
                              ResponseFactory $response_factory): Response
     {
         try {
-            $format = $request->get('format');
-            $only   = \array_filter(\explode(',', $request->get('only', '')));
+            /** @var string $only_data */
+            $only_data    = $request->get('only', '');
+            $only_metrics = \array_filter(\explode(',', $only_data));
 
+            $format    = $request->get('format');
             $formatter = \is_string($format) && $format !== ''
                 ? $formatters_manager->make($format)
                 : $formatters_manager->default();
 
-            $metrics = empty($only)
+            $metrics = empty($only_metrics)
                 ? $metrics_manager->iterateAll()
-                : $metrics_manager->iterate($only);
+                : $metrics_manager->iterate($only_metrics);
 
             $headers = $formatter instanceof UseCustomHttpHeadersInterface
                 ? $formatter->httpHeaders()
                 : [];
 
-            return $response_factory->make((string) $formatter->format($metrics), 200, $headers);
+            return $response_factory->make($formatter->format($metrics), 200, $headers);
         } catch (Exception $e) {
             $exception_handler->report($e);
 

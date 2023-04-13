@@ -11,7 +11,7 @@ interface MetricFormatterInterface
      *
      * @param MetricInterface[]|iterable $metrics
      *
-     * @return mixed
+     * @return array<mixed>|string
      */
-    public function format(iterable $metrics);
+    public function format(iterable $metrics): array|string;
 }

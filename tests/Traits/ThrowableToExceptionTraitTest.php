@@ -11,7 +11,7 @@ use AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait;
 use AvtoDev\AppMetrics\Tests\Stubs\Exceptions\ShouldBeSkippedException;
 
 /**
- * @covers \AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait<extended>
+ * @covers \AvtoDev\AppMetrics\Traits\ThrowableToExceptionTrait
  */
 class ThrowableToExceptionTraitTest extends AbstractUnitTestCase
 {

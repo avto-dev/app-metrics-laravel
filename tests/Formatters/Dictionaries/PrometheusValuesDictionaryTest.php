@@ -8,7 +8,7 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary;
 
 /**
- * @covers \AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary<extended>
+ * @covers \AvtoDev\AppMetrics\Formatters\Dictionaries\PrometheusValuesDictionary
  */
 class PrometheusValuesDictionaryTest extends AbstractUnitTestCase
 {

@@ -14,7 +14,7 @@ use AvtoDev\AppMetrics\FormattersManagerInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
- * @covers \AvtoDev\AppMetrics\ServiceProvider<extended>
+ * @covers \AvtoDev\AppMetrics\ServiceProvider
  */
 class ServiceProviderTest extends AbstractUnitTestCase
 {

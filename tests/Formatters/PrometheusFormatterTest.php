@@ -23,7 +23,7 @@ use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 /**
- * @covers \AvtoDev\AppMetrics\Formatters\PrometheusFormatter<extended>
+ * @covers \AvtoDev\AppMetrics\Formatters\PrometheusFormatter
  */
 class PrometheusFormatterTest extends AbstractUnitTestCase
 {
