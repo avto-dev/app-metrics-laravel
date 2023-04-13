@@ -22,7 +22,7 @@ use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 /**
- * @covers \AvtoDev\AppMetrics\Formatters\JsonFormatter<extended>
+ * @covers \AvtoDev\AppMetrics\Formatters\JsonFormatter
  */
 class JsonFormatterTest extends AbstractUnitTestCase
 {

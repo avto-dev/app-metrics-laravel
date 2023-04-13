@@ -11,7 +11,7 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware;
 
 /**
- * @covers \AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware<extended>
+ * @covers \AvtoDev\AppMetrics\Http\Middleware\CheckMetricsSecretMiddleware
  */
 class CheckMetricsSecretMiddlewareTest extends AbstractUnitTestCase
 {

@@ -10,7 +10,7 @@ use AvtoDev\AppMetrics\Metrics\HasLabelsInterface;
 use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 
 /**
- * @covers \AvtoDev\AppMetrics\Metrics\HostInfoMetric<extended>
+ * @covers \AvtoDev\AppMetrics\Metrics\HostInfoMetric
  */
 class HostInfoMetricTest extends AbstractUnitTestCase
 {

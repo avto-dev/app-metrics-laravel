@@ -11,7 +11,7 @@ use AvtoDev\AppMetrics\Tests\AbstractUnitTestCase;
 use AvtoDev\AppMetrics\Metrics\IlluminateFrameworkMetric;
 
 /**
- * @covers \AvtoDev\AppMetrics\Metrics\IlluminateFrameworkMetric<extended>
+ * @covers \AvtoDev\AppMetrics\Metrics\IlluminateFrameworkMetric
  */
 class IlluminateFrameworkMetricTest extends AbstractUnitTestCase
 {

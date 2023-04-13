@@ -13,7 +13,7 @@ use AvtoDev\AppMetrics\Tests\Stubs\Formatters\BarFormatter;
 use AvtoDev\AppMetrics\Tests\Stubs\Formatters\FooFormatter;
 
 /**
- * @covers \AvtoDev\AppMetrics\FormattersManager<extended>
+ * @covers \AvtoDev\AppMetrics\FormattersManager
  */
 class FormattersManagerTest extends AbstractUnitTestCase
 {

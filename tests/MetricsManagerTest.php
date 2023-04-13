@@ -18,7 +18,7 @@ use AvtoDev\AppMetrics\Exceptions\ShouldBeSkippedMetricExceptionInterface;
 use AvtoDev\AppMetrics\Tests\Stubs\Handlers\ExceptionHandler as ExceptionHandlerStub;
 
 /**
- * @covers \AvtoDev\AppMetrics\MetricsManager<extended>
+ * @covers \AvtoDev\AppMetrics\MetricsManager
  */
 class MetricsManagerTest extends AbstractUnitTestCase
 {
