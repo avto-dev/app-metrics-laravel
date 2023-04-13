@@ -11,7 +11,10 @@ class FooFormatter implements MetricFormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function format(iterable $metrics)
+    public function format(iterable $metrics): array
     {
+        return [
+            'foo' => 'bar',
+        ];
     }
 }
