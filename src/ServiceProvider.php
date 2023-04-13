@@ -54,7 +54,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $root = static::getConfigRootKeyName();
 
         if ($config->get("{$root}.http.enabled") === true) {
-            $router->get($config->get("{$root}.http.uri"), [
+            /** @var string $uri */
+            $uri = $config->get("{$root}.http.uri", '');
+
+            $router->get($uri, [
                 'uses' => $config->get("{$root}.http.controller"),
                 'as'   => $config->get("{$root}.http.name"),
             ]);
@@ -73,10 +76,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 $config = $container->make(ConfigRepository::class);
                 /** @var ExceptionHandler $exception_handler */
                 $exception_handler = $container->make(ExceptionHandler::class);
+                /** @var string[] $metrics */
+                $metrics = $config->get(static::getConfigRootKeyName() . '.metric_classes');
 
                 return new MetricsManager(
                     $container,
-                    (array) $config->get(static::getConfigRootKeyName() . '.metric_classes'),
+                    $metrics,
                     $exception_handler
                 );
             }
@@ -94,11 +99,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 /** @var ConfigRepository $config */
                 $config = $container->make(ConfigRepository::class);
                 $root   = static::getConfigRootKeyName();
+                /** @var string[] $formatters */
+                $formatters = $config->get("{$root}.formatters", []);
+                /** @var string $default_format */
+                $default_format = $config->get("{$root}.default_format", "");
 
                 return new FormattersManager(
                     $container,
-                    (array) $config->get("{$root}.formatters"),
-                    (string) $config->get("{$root}.default_format")
+                    $formatters,
+                    $default_format
                 );
             }
         );

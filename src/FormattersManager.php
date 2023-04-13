@@ -68,7 +68,10 @@ class FormattersManager implements FormattersManagerInterface
         }
 
         $this->factories[$alias] = function () use ($formatter_class): MetricFormatterInterface {
-            return $this->container->make($formatter_class);
+            /** @var MetricFormatterInterface $formatter */
+            $formatter = $this->container->make($formatter_class);
+
+            return $formatter;
         };
     }
 

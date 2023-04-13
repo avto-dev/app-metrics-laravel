@@ -30,7 +30,10 @@ class CheckMetricsSecretMiddleware
      */
     public function __construct(ConfigRepository $config, ResponseFactory $response_factory)
     {
-        $this->secret           = $config->get(ServiceProvider::getConfigRootKeyName() . '.http.secret');
+        /** @var string|null $secret */
+        $secret = $config->get(ServiceProvider::getConfigRootKeyName() . '.http.secret');
+
+        $this->secret           = $secret;
         $this->response_factory = $response_factory;
     }
 
