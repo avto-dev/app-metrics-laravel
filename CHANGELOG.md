@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Using `docker` with `compose` plugin instead of `docker-compose` for test environment
 - Laravel `12.x` support
+- Minimal require PHP version now is `8.2`
 
 ## v2.8.0
 
